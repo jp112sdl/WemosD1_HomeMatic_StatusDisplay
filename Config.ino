@@ -36,7 +36,7 @@ bool loadSystemConfig() {
 
           GlobalConfig.SelectedEOrder = (json["eorder"]).as<int>();
           GlobalConfig.LedBrightness = (json["brightness"]).as<byte>();
-          if (GlobalConfig.LedBrightness == 0) GlobalConfig.LedBrightness = 255;
+          if (GlobalConfig.LedBrightness < 5) GlobalConfig.LedBrightness = 255;
         } else {
           Serial.println("failed to load json config");
         }

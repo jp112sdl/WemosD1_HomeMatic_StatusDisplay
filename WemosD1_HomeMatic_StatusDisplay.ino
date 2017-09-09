@@ -34,7 +34,7 @@ enum _EOrder {
 struct globalconfig_t {
   byte LedBrightness = 255;
   int SelectedEOrder = _RGB; //Default Vorbelegung
-  int NumLeds = 1; //Default Vorbelegung
+  int NumLeds =        16; //Default Vorbelegung
   char ccuIp[IP_SIZE];
   char deviceName[VARIABLE_SIZE];
   bool restoreStateFromCCU = false;

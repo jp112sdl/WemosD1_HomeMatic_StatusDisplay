@@ -3,6 +3,7 @@ const char HTTP_TABLE[] PROGMEM = "<table class=tc><tr><td>Status 1</td><td bgco
 
 void startWebServer() {
   webServer.on("/set", webSetLed);
+  webServer.on("/getValuesFromCCU", getValuesFromCCU);
   webServer.on("/sleep", webSleep);
   webServer.on("/wakeup", webWakeup);
   webServer.on("/wifiStatus", webWifiStatus);
