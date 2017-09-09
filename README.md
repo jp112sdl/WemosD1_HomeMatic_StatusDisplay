@@ -13,13 +13,20 @@ Ziel dieses Projektes ist der kostengünstige Bau einer Statusanzeige, ähnlich 
 - 16x RGB LED [WS2812B](http://www.ebay.de/itm/222580456169) (ca. 5,95 EUR für 50 Stück!)
 - _optional: 1x HC-SR501 PIR Bewegungsmelder_
 
-
-
 Aufbau:<br>
 ![wiring](Images/wiring.png)
 
+## Einrichtung der CCU
+### Erstellen eines neuen CUxD Exec (sofern nicht bereits vorhanden!)<br>
+<img src="Images/CUxD_Exec_erstellen.png">
 
-HomeMatic Skript
+### Erstellen eines neuen CUxD Dimmers<br>
+<img src="Images/CUxD_Dimmer_erstellen.png">
+
+### Erstellen eines Programms<br>
+<img src="Images/HomeMatic_Programm.png">
+
+Das Skript im DANN-Block (die IP-Adresse ist entsprechend anzupassen!):
 ```
 string displayIP = "192.168.1.99";
 string channel = dom.GetObject(((dom.GetObject("$src$")).Channel())).Name();
