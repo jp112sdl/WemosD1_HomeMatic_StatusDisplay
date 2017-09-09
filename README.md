@@ -19,6 +19,8 @@ Die Helligkeit der LEDs lässt sich mit einem Taster in 25 Stufen einstellen.
 Aufbau:<br>
 ![wiring](Images/wiring.png)
 
+Eine Vorlage für den 3D-Druck der Frontplatte könnt ihr hier herunterladen: [Front.stl](Images/Front.stl)
+
 ## Einrichtung der CCU
 ### Erstellen eines neuen CUxD Exec (sofern nicht bereits vorhanden!)<br>
 <img src="Images/CUxD_Exec_erstellen.png">
