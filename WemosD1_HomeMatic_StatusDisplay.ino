@@ -156,7 +156,7 @@ void loop() {
         brightnesskeylast = true;
         int brightness = GlobalConfig.LedBrightness;
         brightness = brightness + 25;
-        if (brightness > 255) brightness = 1;
+        if (brightness > 255) brightness = 10;
         setLedBrightness(brightness);
         Serial.println("BRIGHTNESS_KEY pressed! Set brightness to " + String(brightness));      
         delay(10); //Entprellen
