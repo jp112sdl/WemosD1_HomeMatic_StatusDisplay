@@ -16,9 +16,10 @@ Die Helligkeit der LEDs lässt sich mit einem Taster in 25 Stufen einstellen.
 - 16x RGB LED [WS2812B](http://www.ebay.de/itm/222580456169) (ca. 5,95 EUR für 50 Stück!)
 - _optional: 1x HC-SR501 PIR Bewegungsmelder_
 
-Aufbau:<br>
+**Aufbau:**<br>
 ![wiring](Images/wiring.png)
 
+**Frontplatte:**
 Eine Vorlage für den 3D-Druck der Frontplatte könnt ihr hier herunterladen: [Front.stl](Images/Front.stl)
 
 ## Einrichtung der CCU
