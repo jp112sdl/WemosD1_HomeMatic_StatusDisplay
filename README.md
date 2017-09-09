@@ -44,9 +44,33 @@ integer ledNum = channel.StrValueByIndex(":", 1).ToInteger();
 
 dom.GetObject("CUxD.CUX2801001:1.CMD_EXEC").State ("/usr/local/addons/cuxd/curl -s -k -d led="#ledNum#" -d dim="#val#" http://"#displayIP#"/set");
 ```
+### Flashen der Firmware
+Nach dem Zusammenbau der Komponenten kann die Firmware `WemosD1_HomeMatic_StatusDisplay.ino.d1_mini.bin` ([Download](https://github.com/jp112sdl/WemosD1_HomeMatic_StatusDisplay/releases/latest)) auf den Wemos geflasht werden. 
+#### Vorgehensweise:
+1. Voraussetzungen:
+    - CH340-Treiber installieren ([Download-Seite des Herstellers](https://wiki.wemos.cc/downloads))
+    - Kommandozeilentool [esptool](https://github.com/igrr/esptool-ck/releases) herunterladen (Windows, Linux Mac) 
+    - oder grafisches Tool [ESP8266Flasher](https://esp8266.ru/download/esp8266-utils/esp8266_flasher.zip) herunterladen und entpacken (Windows)
+2. Die Dateien `esptool.exe` und `WemosD1_HomeMatic_StatusDisplay.ino.d1_mini.bin` am besten in einem gemeinsamen Verzeichnis ablegen
+3. Wemos mit einem USB-Kabel an den PC anschließen
+4. Bezeichnung des neuen COM-Ports im Gerätemanager notieren (z.B. COM5)
+- Flash-Vorgang durchführen (mit grafischem ESP8266Flasher):
+    - esp8266_flasher.exe mit Doppelklick starten
+    - auf den Button "Bin" klicken und heruntergeladene `WemosD1_HomeMatic_StatusDisplay.ino.d1_mini.bin` auswählen
+    - `COM1` auf den unter 4. ermittelten COM-Port ändern
+    - Wemos vom USB trennen
+    - D3 und GND miteinander verbinden, dabei den Wemos wieder an USB anschließen _(der Wemos befindet sich nun im Bootloader-Modus)_
+    - Download anklicken
+- Flash-Vorgang durchführen (mit esptool auf Kommandozeile): 
+    - (Windows) Eingabeaufforderung öffnen
+    - ins Verzeichnis wechseln, in das `esptool` und `WemosD1_HomeMatic_StatusDisplay.ino.d1_mini.bin` (cd c:\... usw.) abgelegt wurden
+    - anschließend Flash-Vorgang starten mit dem Befehl
 
-## Konfiguration des Wemos D1
-Um den Konfigurationsmodus zu starten, muss der Wemos D1 mit gedrückt gehaltenem Taster (gestartet werden. Die blaue LED blinkt kurz und leuchtet dann dauerhaft.
+`esptool.exe -vv -cd nodemcu -cb 921600 -cp COM5 -ca 0x00000 -cf WemosD1_HomeMatic_StatusDisplay.ino.d1_mini.bin`
+
+
+## Konfiguration des Wemos
+Um den Konfigurationsmodus zu starten, muss der Wemos mit gedrückt gehaltenem Taster (gestartet werden. Die blaue LED blinkt kurz und leuchtet dann dauerhaft.
 
 Der Konfigurationsmodus ist nun aktiv.
 
