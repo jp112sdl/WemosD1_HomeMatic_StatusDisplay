@@ -55,16 +55,16 @@ bool doWifiConnect() {
     }
     WiFiManagerParameter custom_rgborder("rgborder", "RGB Reihenfolge", "", 8, INPUT_COMBOBOX, eorder.c_str());
 
-    WiFiManagerParameter custom_color1("color1", "Farbe f&uuml;r Dimmer 10..19%", Dimmer2ColorDefinition[0].c_str(), VARIABLE_SIZE,INPUT_COLOR," onchange='setColor()' ");
-    WiFiManagerParameter custom_color2("color2", "Farbe f&uuml;r Dimmer 20..29%", Dimmer2ColorDefinition[1].c_str(), VARIABLE_SIZE,INPUT_COLOR," onchange='setColor()' ");
-    WiFiManagerParameter custom_color3("color3", "Farbe f&uuml;r Dimmer 30..39%", Dimmer2ColorDefinition[2].c_str(), VARIABLE_SIZE,INPUT_COLOR," onchange='setColor()' ");
-    WiFiManagerParameter custom_color4("color4", "Farbe f&uuml;r Dimmer 40..49%", Dimmer2ColorDefinition[3].c_str(), VARIABLE_SIZE,INPUT_COLOR," onchange='setColor()' ");
-    WiFiManagerParameter custom_color5("color5", "Farbe f&uuml;r Dimmer 50..59%", Dimmer2ColorDefinition[4].c_str(), VARIABLE_SIZE,INPUT_COLOR," onchange='setColor()' ");
-    WiFiManagerParameter custom_color6("color6", "Farbe f&uuml;r Dimmer 60..69%", Dimmer2ColorDefinition[5].c_str(), VARIABLE_SIZE,INPUT_COLOR," onchange='setColor()' ");
-    WiFiManagerParameter custom_color7("color7", "Farbe f&uuml;r Dimmer 70..79%", Dimmer2ColorDefinition[6].c_str(), VARIABLE_SIZE,INPUT_COLOR," onchange='setColor()' ");
-    WiFiManagerParameter custom_color8("color8", "Farbe f&uuml;r Dimmer 80..89%", Dimmer2ColorDefinition[7].c_str(), VARIABLE_SIZE,INPUT_COLOR," onchange='setColor()' ");
-    WiFiManagerParameter custom_color9("color9", "Farbe f&uuml;r Dimmer 90..99%", Dimmer2ColorDefinition[8].c_str(), VARIABLE_SIZE,INPUT_COLOR," onchange='setColor()' ");
-    WiFiManagerParameter custom_color10("color10", "Farbe f&uuml;r Dimmer 100%", Dimmer2ColorDefinition[9].c_str(), VARIABLE_SIZE,INPUT_COLOR," onchange='setColor()' ");
+    WiFiManagerParameter custom_color1("color1", "Farbe f&uuml;r Dimmer 10..19%", Dimmer2ColorDefinition[0].c_str(), VARIABLE_SIZE, INPUT_COLOR, " onchange='setColor()' ");
+    WiFiManagerParameter custom_color2("color2", "Farbe f&uuml;r Dimmer 20..29%", Dimmer2ColorDefinition[1].c_str(), VARIABLE_SIZE, INPUT_COLOR, " onchange='setColor()' ");
+    WiFiManagerParameter custom_color3("color3", "Farbe f&uuml;r Dimmer 30..39%", Dimmer2ColorDefinition[2].c_str(), VARIABLE_SIZE, INPUT_COLOR, " onchange='setColor()' ");
+    WiFiManagerParameter custom_color4("color4", "Farbe f&uuml;r Dimmer 40..49%", Dimmer2ColorDefinition[3].c_str(), VARIABLE_SIZE, INPUT_COLOR, " onchange='setColor()' ");
+    WiFiManagerParameter custom_color5("color5", "Farbe f&uuml;r Dimmer 50..59%", Dimmer2ColorDefinition[4].c_str(), VARIABLE_SIZE, INPUT_COLOR, " onchange='setColor()' ");
+    WiFiManagerParameter custom_color6("color6", "Farbe f&uuml;r Dimmer 60..69%", Dimmer2ColorDefinition[5].c_str(), VARIABLE_SIZE, INPUT_COLOR, " onchange='setColor()' ");
+    WiFiManagerParameter custom_color7("color7", "Farbe f&uuml;r Dimmer 70..79%", Dimmer2ColorDefinition[6].c_str(), VARIABLE_SIZE, INPUT_COLOR, " onchange='setColor()' ");
+    WiFiManagerParameter custom_color8("color8", "Farbe f&uuml;r Dimmer 80..89%", Dimmer2ColorDefinition[7].c_str(), VARIABLE_SIZE, INPUT_COLOR, " onchange='setColor()' ");
+    WiFiManagerParameter custom_color9("color9", "Farbe f&uuml;r Dimmer 90..99%", Dimmer2ColorDefinition[8].c_str(), VARIABLE_SIZE, INPUT_COLOR, " onchange='setColor()' ");
+    WiFiManagerParameter custom_color10("color10", "Farbe f&uuml;r Dimmer 100%", Dimmer2ColorDefinition[9].c_str(), VARIABLE_SIZE, INPUT_COLOR, " onchange='setColor()' ");
 
     WiFiManagerParameter custom_text_dhcp("<br/><br>Statische IP (wenn leer, dann DHCP):");
     WiFiManagerParameter custom_ip("custom_ip", "IP-Adresse", "", IP_SIZE, INPUT_TEXT, "pattern='((^|\\.)((25[0-5])|(2[0-4]\\d)|(1\\d\\d)|([1-9]?\\d))){4}$'");
@@ -102,15 +102,10 @@ bool doWifiConnect() {
 
     if (startWifiManager == true) {
       digitalWrite(LED_BUILTIN, LOW);
-      if (_ssid == "" || _psk == "" ) {
-        wifiManager.resetSettings();
-      }
-      else {
-        if (!wifiManager.startConfigPortal(Hostname.c_str())) {
-          Serial.println("failed to connect and hit timeout");
-          delay(1000);
-          ESP.restart();
-        }
+      if (!wifiManager.startConfigPortal(Hostname.c_str())) {
+        Serial.println("failed to connect and hit timeout");
+        delay(1000);
+        ESP.restart();
       }
     }
 
