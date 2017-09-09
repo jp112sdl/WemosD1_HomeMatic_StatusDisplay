@@ -100,3 +100,6 @@ _(evtl. lade ich mal 2 gleichgroße Bilder hoch) ;)_
 - Anzahl LEDs: Im "Normalfall" **16** - wer weniger oder mehr LEDs benutzen möchte, kann dies hier festlegen
 - RGB Reihenfolge: Wenn die gewünschte Farbe nicht der tatsächlichen, von der LED wiedergegebenen Farbe entspricht, ist der Wert zu ändern. Die meisten WS2812B LEDs verwenden jedoch "GRB". 
 - Farbe für Dimmer ...: hier legt man fest, welcher CUxD Dimmerwert (in 10er Schritten) mit welcher LED Farbe angezeigt werden soll. Die Farben sind in HEX-Werten ohne führende "#" anzugeben. Um die Farben zu "finden" gibt es online [Farbpaletten](http://htmlcolorcodes.com)
+
+
+Wer "Danke" sagen möchte (in Form einer kleinen Spende), kann gern hier klicken: [![paypal](https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=UBX8NFNYVWW8N)
