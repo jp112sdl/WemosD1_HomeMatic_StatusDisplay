@@ -118,7 +118,7 @@ _(evtl. lade ich mal 2 gleichgroße Bilder hoch) ;)_
 ### UDP (Port = 6690):
 | Zeichenfolge | Befehl |
 |----------|-------------|
-`led=<LEDNum>&hex=<HEXValue>` |Setzt die LED Nummer \<LEDNum\> auf den Farbwert im Hexadezimalformat (HTML-Farbcode) http://192.168.1.99/set?led=4&hex=FF0000 = LED 4, Farbe Rot
+`led=<LEDNum>&hex=<HEXValue>` |Setzt die LED Nummer \<LEDNum\> auf den Farbwert im Hexadezimalformat (HTML-Farbcode)
 `sleep` | Schaltet alle LEDs aus. Neue Farbwerte können dennoch gesetzt werden. Die LEDs werden erst wieder mit `wakeup` angezeigt
 `wakeup` | Beenden des Sleep-Mode
 `wakeup?t=<n>` | Beenden des Sleep-Mode für \<n\> Sekunden. Danach werden die LEDs wieder abgeschaltet.
