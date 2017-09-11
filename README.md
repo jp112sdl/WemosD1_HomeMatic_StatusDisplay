@@ -102,4 +102,32 @@ _(evtl. lade ich mal 2 gleichgroße Bilder hoch) ;)_
 - Farbe für Dimmer ...: hier legt man fest, welcher CUxD Dimmerwert (in 10er Schritten) mit welcher LED Farbe angezeigt werden soll. Die Farben sind in HEX-Werten ohne führende "#" anzugeben. Um die Farben zu "finden" gibt es online [Farbpaletten](http://htmlcolorcodes.com)
 
 
+## Steuerung der LEDs via HTTP (GET/POST) / UDP
+### HTTP:
+| Aufruf<br>`http://<ip>/...` |  Befehl |
+|----------|-------------|
+`set?led=<LEDNum>&dim=<DIMValue>` |Setzt die LED Nummer \<LEDNum\> auf den konfigurierten Farbwert 1...10. 0 = LED aus
+`set?led=<LEDNum>&hex=<HEXValue>` |Setzt die LED Nummer \<LEDNum\> auf den Farbwert im Hexadezimalformat (HTML-Farbcode) http://192.168.1.99/set?led=4&hex=FF0000 = LED 4, Farbe Rot
+`sleep` | Schaltet alle LEDs aus. Neue Farbwerte können dennoch gesetzt werden. Die LEDs werden erst wieder mit `wakeup` angezeigt
+`set?brightness=<xxx>` |Helligkeit der LEDs. \<xxx\> = (dunkel) 1...255 (hell)
+`wakeup` | Beenden des Sleep-Mode
+`wakeup?t=<n>` | Beenden des Sleep-Mode für \<n\> Sekunden. Danach werden die LEDs wieder abgeschaltet.
+`getValuesFromCCU`|Erzwingt das Laden der Werte aus der CCU
+`wifiStatus`| Gibt Informationen zum WLAN / Netzwerk aus
+
+### UDP (Port = 6690):
+| Zeichenfolge | Befehl |
+|----------|-------------|
+`led=<LEDNum>&hex=<HEXValue>` |Setzt die LED Nummer \<LEDNum\> auf den Farbwert im Hexadezimalformat (HTML-Farbcode) http://192.168.1.99/set?led=4&hex=FF0000 = LED 4, Farbe Rot
+`sleep` | Schaltet alle LEDs aus. Neue Farbwerte können dennoch gesetzt werden. Die LEDs werden erst wieder mit `wakeup` angezeigt
+`wakeup` | Beenden des Sleep-Mode
+`wakeup?t=<n>` | Beenden des Sleep-Mode für \<n\> Sekunden. Danach werden die LEDs wieder abgeschaltet.
+`brightness=<xxx>`| Helligkeit der LEDs. \<xxx\> = (dunkel) 1...255 (hell)
+
+Beispielaufrufe mit socat:
+
+Gerät aufwecken:
+`echo "wakeup" | socat - udp-sendto:<ip>:6690`
+
+
 Wer "Danke" sagen möchte (in Form einer kleinen Spende), kann gern hier klicken: [![paypal](https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=UBX8NFNYVWW8N)
