@@ -19,6 +19,7 @@ void startWebServer() {
     webServer.send(404, "text/plain", "Hier gibt es nichts zu sehen!");
   });
   webServer.on("/", webDefaultHtml);
+  httpUpdater.setup(&webServer);
   webServer.begin();
   Serial.println("Starte Webserver an Port " + String(WEBSERVER_PORT) + "...");
 }

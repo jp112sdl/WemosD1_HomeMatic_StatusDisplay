@@ -7,6 +7,7 @@
 #include <FastLED.h>
 #include <WiFiUdp.h>
 #include <ArduinoOTA.h>
+#include <ESP8266HTTPUpdateServer.h>
 
 #define CONFIG_PIN     D1 //Taster gegen GND, um den Konfigurationsmodus zu aktivieren
 #define PIR_PIN        D5
@@ -58,6 +59,7 @@ enum DisplayStates {
 };
 
 ESP8266WebServer webServer(WEBSERVER_PORT);
+ESP8266HTTPUpdateServer httpUpdater;
 
 //UDP
 struct udp_t {
