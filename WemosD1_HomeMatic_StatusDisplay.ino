@@ -11,14 +11,18 @@
 #define CONFIG_PIN     D1 //Taster gegen GND, um den Konfigurationsmodus zu aktivieren
 #define PIR_PIN        D5
 #define WEBSERVER_PORT 80
+#define UDPPORT        6690
 
 // FastLED
 #define LED_PIN D7
 #define LED_TYPE WS2812
 #define MAX_LEDS 255
-CRGB leds[MAX_LEDS];
-CRGB ledsBackup[MAX_LEDS];
-int  ledColors[MAX_LEDS];
+struct led_t {
+  CRGB leds[MAX_LEDS];
+  CRGB ledsBackup[MAX_LEDS];
+  int  Colors[MAX_LEDS];
+  bool Blink[MAX_LEDS];
+} LEDConfig;
 
 enum _EOrder {
   _RGB = 0012,
@@ -33,11 +37,12 @@ enum _EOrder {
 
 struct globalconfig_t {
   byte LedBrightness = 255;
-  int SelectedEOrder = _RGB; //Default Vorbelegung
-  int NumLeds =        16; //Default Vorbelegung
-  char ccuIp[IP_SIZE];
-  char deviceName[VARIABLE_SIZE];
-  bool restoreStateFromCCU = false;
+  int SelectedEOrder = _RGB;
+  int NumLeds =        16;
+  char CcuIp[IP_SIZE];
+  char DeviceName[VARIABLE_SIZE];
+  bool RestoreStateFromCCU = false;
+  byte DimBlink = 11;
 } GlobalConfig;
 
 #define HEXARRAY_SIZE  24
@@ -55,7 +60,6 @@ enum DisplayStates {
 ESP8266WebServer webServer(WEBSERVER_PORT);
 
 //UDP
-#define UDPPORT             6690
 struct udp_t {
   WiFiUDP UDP;
   char incomingPacket[255];
@@ -73,11 +77,11 @@ boolean startWifiManager    = false;
 
 int DisplayTimeoutSeconds = 0;
 unsigned long LastDisplayTimeOutMillis = 0;
-unsigned long LastShowLedMillis = 0;
+unsigned long LastBlinkMillis = 0;
 bool OTAStart = false;
 bool DisplayState = Wake;
-bool SomeLedHasChanged = true;
 bool brightnesskeylast = false;
+bool blinkState = false;
 volatile byte PIRInterruptDetected = 0;
 
 void setup() {
@@ -116,7 +120,7 @@ void setup() {
 
   startOTAhandling();
 
-  if (GlobalConfig.restoreStateFromCCU)
+  if (GlobalConfig.RestoreStateFromCCU)
     getValuesFromCCU();
 
   Serial.println("Boot abgeschlossen");
@@ -125,8 +129,8 @@ void setup() {
 void loop() {
   if (LastDisplayTimeOutMillis > millis())
     LastDisplayTimeOutMillis = millis();
-  if (LastShowLedMillis > millis())
-    LastShowLedMillis = millis();
+  if (LastBlinkMillis > millis())
+    LastBlinkMillis = millis();
 
   ArduinoOTA.handle();
 
@@ -143,11 +147,18 @@ void loop() {
       setLedMode(Sleep);
     }
 
-    if (millis() - LastShowLedMillis > 500) {
-      LastShowLedMillis = millis();
-      if (DisplayState == Wake && SomeLedHasChanged) {
-        FastLED.show();
-        SomeLedHasChanged = false;
+    if (millis() - LastBlinkMillis > 1000 && DisplayState == Wake) {
+      LastBlinkMillis = millis();
+      blinkState = !blinkState;
+      for (int i = 0; i < GlobalConfig.NumLeds; i++) {
+        LEDConfig.ledsBackup[i] = LEDConfig.leds[i];
+        if (blinkState && LEDConfig.Blink[i]) {
+          LEDConfig.leds[i] = CRGB::Black;
+        }
+      }
+      FastLED.show();
+      for (int i = 0; i < GlobalConfig.NumLeds; i++) {
+        LEDConfig.leds[i] = LEDConfig.ledsBackup[i];
       }
     }
 
@@ -158,7 +169,7 @@ void loop() {
         brightness = brightness + 25;
         if (brightness > 255) brightness = 10;
         setLedBrightness(brightness);
-        Serial.println("BRIGHTNESS_KEY pressed! Set brightness to " + String(brightness));      
+        Serial.println("BRIGHTNESS_KEY pressed! Set brightness to " + String(brightness));
         delay(10); //Entprellen
       }
     } else {
