@@ -9,7 +9,7 @@ bool doWifiConnect() {
     Serial.println(F("Connecting WLAN the classic way..."));
     WiFi.disconnect();
     WiFi.mode(WIFI_STA);
-    WiFi.hostname(GlobalConfig.deviceName);
+    WiFi.hostname(GlobalConfig.DeviceName);
     WiFi.begin(_ssid.c_str(), _psk.c_str());
     int waitCounter = 0;
     if (String(ip) != "0.0.0.0")
@@ -31,14 +31,14 @@ bool doWifiConnect() {
     wifiManager.setAPCallback(configModeCallback);
     wifiManager.setSaveConfigCallback(saveConfigCallback);
 
-    WiFiManagerParameter custom_text_hm("<br>HomeMatic Konfiguration:");
-    WiFiManagerParameter custom_ccuip("ccu", "IP der CCU2", GlobalConfig.ccuIp, IP_SIZE, INPUT_TEXT, "pattern='((^|\\.)((25[0-5])|(2[0-4]\\d)|(1\\d\\d)|([1-9]?\\d))){4}$'");
-    WiFiManagerParameter custom_devicename("devicename", "Ger&auml;tename", GlobalConfig.deviceName, VARIABLE_SIZE, INPUT_TEXT, "pattern='\\w{1,}'");
+    WiFiManagerParameter custom_text_hm("<div>HomeMatic Konfiguration:</div>");
+    WiFiManagerParameter custom_ccuip("ccuip", "IP der CCU2", GlobalConfig.CcuIp, IP_SIZE, INPUT_TEXT, "pattern='((^|\\.)((25[0-5])|(2[0-4]\\d)|(1\\d\\d)|([1-9]?\\d))){4}$'");
+    WiFiManagerParameter custom_devicename("devicename", "Ger&auml;tename", GlobalConfig.DeviceName, VARIABLE_SIZE, INPUT_TEXT, "pattern='\\w{1,}'");
     char*chrRestoreOldState = "0";
-    if (GlobalConfig.restoreStateFromCCU) chrRestoreOldState =  "1" ;
+    if (GlobalConfig.RestoreStateFromCCU) chrRestoreOldState =  "1" ;
     WiFiManagerParameter custom_cbrestorestate("restorestate", "Boot: Lade Werte von CCU", chrRestoreOldState, 8, INPUT_CHECKBOX);
 
-    WiFiManagerParameter custom_text_led("<br/><br>LED Konfiguration:");
+    WiFiManagerParameter custom_text_led("<div>LED Konfiguration:</div>");
     WiFiManagerParameter custom_numleds("numleds", "Anzahl LEDs", String(GlobalConfig.NumLeds).c_str(), VARIABLE_SIZE, INPUT_TEXT, "required pattern='[0-9]{1,2}'");
 
     String eorder = "<option {srgb} value='" + String(_RGB) + "'>RGB</option><option {sgrb} value='" + String(_GRB) + "'>GRB</option>";
@@ -55,6 +55,7 @@ bool doWifiConnect() {
     }
     WiFiManagerParameter custom_rgborder("rgborder", "RGB Reihenfolge", "", 8, INPUT_COMBOBOX, eorder.c_str());
 
+    WiFiManagerParameter custom_text_dimmerconfig("<div>Dimmer-Konfiguration:</div>");
     WiFiManagerParameter custom_color1("color1", "Farbe f&uuml;r Dimmer 10..19%", Dimmer2ColorDefinition[0].c_str(), VARIABLE_SIZE, INPUT_COLOR);
     WiFiManagerParameter custom_color2("color2", "Farbe f&uuml;r Dimmer 20..29%", Dimmer2ColorDefinition[1].c_str(), VARIABLE_SIZE, INPUT_COLOR);
     WiFiManagerParameter custom_color3("color3", "Farbe f&uuml;r Dimmer 30..39%", Dimmer2ColorDefinition[2].c_str(), VARIABLE_SIZE, INPUT_COLOR);
@@ -66,7 +67,10 @@ bool doWifiConnect() {
     WiFiManagerParameter custom_color9("color9", "Farbe f&uuml;r Dimmer 90..99%", Dimmer2ColorDefinition[8].c_str(), VARIABLE_SIZE, INPUT_COLOR);
     WiFiManagerParameter custom_color10("color10", "Farbe f&uuml;r Dimmer 100%", Dimmer2ColorDefinition[9].c_str(), VARIABLE_SIZE, INPUT_COLOR);
 
-    WiFiManagerParameter custom_text_dhcp("<br/><br>Statische IP (wenn leer, dann DHCP):");
+    WiFiManagerParameter custom_text_dimmerblink("<div>Blinken f&uuml;r Dimmer-Werte ab...<br/>(11 = kein blinken)</div>");
+    WiFiManagerParameter custom_dimblink("dimblink", "Blinken f&uuml;r Dimmer-Werte ab...", String(GlobalConfig.DimBlink).c_str(), VARIABLE_SIZE, INPUT_TEXT, "required pattern='[0-9]{1,2}'");
+
+    WiFiManagerParameter custom_text_dhcp("<div>Statische IP (wenn leer, dann DHCP):</div>");
     WiFiManagerParameter custom_ip("custom_ip", "IP-Adresse", "", IP_SIZE, INPUT_TEXT, "pattern='((^|\\.)((25[0-5])|(2[0-4]\\d)|(1\\d\\d)|([1-9]?\\d))){4}$'");
     WiFiManagerParameter custom_netmask("custom_netmask", "Netzmaske", "", IP_SIZE, INPUT_TEXT, "pattern='((^|\\.)((25[0-5])|(2[0-4]\\d)|(1\\d\\d)|([1-9]?\\d))){4}$'");
     WiFiManagerParameter custom_gw("custom_gw", "Gateway", "", IP_SIZE, INPUT_TEXT, "pattern='((^|\\.)((25[0-5])|(2[0-4]\\d)|(1\\d\\d)|([1-9]?\\d))){4}$'");
@@ -80,6 +84,7 @@ bool doWifiConnect() {
     wifiManager.addParameter(&custom_numleds);
     wifiManager.addParameter(&custom_rgborder);
 
+    wifiManager.addParameter(&custom_text_dimmerconfig);
     wifiManager.addParameter(&custom_color1);
     wifiManager.addParameter(&custom_color2);
     wifiManager.addParameter(&custom_color3);
@@ -90,6 +95,9 @@ bool doWifiConnect() {
     wifiManager.addParameter(&custom_color8);
     wifiManager.addParameter(&custom_color9);
     wifiManager.addParameter(&custom_color10);
+
+    wifiManager.addParameter(&custom_text_dimmerblink);
+    wifiManager.addParameter(&custom_dimblink);
 
     wifiManager.addParameter(&custom_text_dhcp);
     wifiManager.addParameter(&custom_ip);
@@ -126,11 +134,11 @@ bool doWifiConnect() {
         strcpy(netmask, "0.0.0.0");
         strcpy(gw,      "0.0.0.0");
       }
-      strcpy(GlobalConfig.ccuIp, custom_ccuip.getValue());
-      strcpy(GlobalConfig.deviceName, custom_devicename.getValue());
+      strcpy(GlobalConfig.CcuIp, custom_ccuip.getValue());
+      strcpy(GlobalConfig.DeviceName, custom_devicename.getValue());
       GlobalConfig.NumLeds = atoi(custom_numleds.getValue());
       GlobalConfig.SelectedEOrder = atoi(custom_rgborder.getValue());
-      GlobalConfig.restoreStateFromCCU = (atoi(custom_cbrestorestate.getValue()) == 1);
+      GlobalConfig.RestoreStateFromCCU = (atoi(custom_cbrestorestate.getValue()) == 1);
 
       Dimmer2ColorDefinition[0] = String(custom_color1.getValue());
       Dimmer2ColorDefinition[1] = String(custom_color2.getValue());
@@ -142,6 +150,8 @@ bool doWifiConnect() {
       Dimmer2ColorDefinition[7] = String(custom_color8.getValue());
       Dimmer2ColorDefinition[8] = String(custom_color9.getValue());
       Dimmer2ColorDefinition[9] = String(custom_color10.getValue());
+
+      GlobalConfig.DimBlink = atoi(custom_dimblink.getValue());
 
       saveSystemConfig();
 

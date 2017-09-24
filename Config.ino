@@ -19,20 +19,23 @@ bool loadSystemConfig() {
           ((json["ip"]).as<String>()).toCharArray(ip, IP_SIZE);
           ((json["netmask"]).as<String>()).toCharArray(netmask, IP_SIZE);
           ((json["gw"]).as<String>()).toCharArray(gw, IP_SIZE);
-          ((json["ccuip"]).as<String>()).toCharArray(GlobalConfig.ccuIp, IP_SIZE);
-          ((json["devicename"]).as<String>()).toCharArray(GlobalConfig.deviceName, VARIABLE_SIZE);
-          
-          GlobalConfig.restoreStateFromCCU = json["restorestate"];
+          ((json["ccuip"]).as<String>()).toCharArray(GlobalConfig.CcuIp, IP_SIZE);
+          ((json["devicename"]).as<String>()).toCharArray(GlobalConfig.DeviceName, VARIABLE_SIZE);
+
+          GlobalConfig.RestoreStateFromCCU = json["restorestate"];
 
           for (int i = 0; i < COLOR_COUNT; i++) {
             String colorStr = (json["color" + String(i)]).as<String>();
-            if (colorStr != "") 
-            Dimmer2ColorDefinition[i] = colorStr;
+            if (colorStr != "")
+              Dimmer2ColorDefinition[i] = colorStr;
           }
 
           GlobalConfig.NumLeds = (json["numleds"]).as<int>();
           if (GlobalConfig.NumLeds == 0)
             GlobalConfig.NumLeds = 1;
+
+          GlobalConfig.DimBlink = (json["dimBlink"]).as<byte>();
+          if (GlobalConfig.DimBlink == 0) GlobalConfig.DimBlink = 11;
 
           GlobalConfig.SelectedEOrder = (json["eorder"]).as<int>();
           GlobalConfig.LedBrightness = (json["brightness"]).as<byte>();
@@ -61,12 +64,13 @@ bool saveSystemConfig() {
   json["ip"] = ip;
   json["netmask"] = netmask;
   json["gw"] = gw;
-  json["ccuip"] = GlobalConfig.ccuIp;
-  json["devicename"] = GlobalConfig.deviceName;
+  json["ccuip"] = GlobalConfig.CcuIp;
+  json["devicename"] = GlobalConfig.DeviceName;
   json["numleds"] = GlobalConfig.NumLeds;
   json["eorder"] = GlobalConfig.SelectedEOrder;
   json["brightness"] = GlobalConfig.LedBrightness;
-  json["restorestate"] = GlobalConfig.restoreStateFromCCU;
+  json["restorestate"] = GlobalConfig.RestoreStateFromCCU;
+  json["dimBlink"] = GlobalConfig.DimBlink;
 
   for (int i = 0; i < COLOR_COUNT; i++) {
     Dimmer2ColorDefinition[i].toUpperCase();
