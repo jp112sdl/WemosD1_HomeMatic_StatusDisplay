@@ -7,6 +7,7 @@ bool doWifiConnect() {
   const char* gwStr = gw; byte gwBytes[4]; parseBytes(gwStr, '.', gwBytes, 4, 10);
   if (!startWifiManager && _ssid != "" && _psk != "" ) {
     Serial.println(F("Connecting WLAN the classic way..."));
+    if (WM_DEBUG_OUTPUT) Serial.println("Connecting to SSID: "+_ssid+" with KEY: "+_psk);
     WiFi.disconnect();
     WiFi.mode(WIFI_STA);
     WiFi.hostname(GlobalConfig.DeviceName);

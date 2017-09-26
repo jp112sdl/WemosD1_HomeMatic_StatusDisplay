@@ -33,6 +33,7 @@ void webDefaultHtml() {
     String hexCol =  String(LEDConfig.Colors[i], HEX);
     for (int i = 0; 6 - hexCol.length(); i++)
       hexCol = "0" + hexCol;
+    Serial.println("WEB-Farbe LED "+String(i)+ " = "+hexCol);   
     page.replace("{c" + String(i + 1) + "}", hexCol);
   }
   page += FPSTR(HTTP_CONFIG_BUTTON);
