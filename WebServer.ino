@@ -1,6 +1,6 @@
-const char HTTP_SD_STYLE[] PROGMEM = "<style>table.tc td {  width: 60px; padding:10px;}</style>";
-const char HTTP_CONFIG_BUTTON[] PROGMEM = "<div></div><hr /><div></div><div><input class='lnkbtn' type='button' value='Konfiguration' onclick=\"window.location.href='/config'\" /></div>";
 const char HTTP_TITLE_LABEL[] PROGMEM = "<div class='l lt'><label>{v}</label><hr /></div>";
+const char HTTP_SD_STYLE[] PROGMEM = "<style>table.tc td {  width: 60px; padding:10px;}</style>";
+const char HTTP_CONFIG_BUTTON[] PROGMEM = "<div></div><hr /><div></div><div><input class='lnkbtn' type='button' value='Konfiguration' onclick=\"window.location.href='/config'\" /></div><div><input class='lnkbtn' type='button' value='Firmware Update' onclick=\"window.location.href='/update'\" /></div>";
 const char HTTP_ALL_STYLE[] PROGMEM = "<style>div {white-space: nowrap;} input[type=text] {width:95%;} .green {color:green;} .red {color:red;} .tdr {float:right;} .tdl { width: 1px;} input.lnkbtn,input.fwbtn {-webkit-appearance: button;-moz-appearance: button;appearance: button;} body {background-color: #303030;} input.lnkbtn,button,input.fwbtn{cursor: pointer;color:#fff;line-height:2.4rem;font-size:1.2rem;width:100%;padding:5px;} input,button,input.lnkbtn,input.fwbtn {border: 0;border-radius: 0.3rem;} .c{text-align: center;} .k{font-style:italic;} .fbg {background-color: #eee;} div,input{padding:5px;font-size:1em;} .i{text-align: right; width: 45% !important;} body{text-align: center;font-family:verdana;} .l{no-repeat left center;background-size: 1em;} .q{float: right;width: 64px;text-align: right;} .ls {font-weight: bold;text-align: center;font-size: 300%;} .lt{font-size: 150%;text-align: center;} table{width:100%;} td{max-width:50%;font-weight: bold;} input.fwbtn {display: none; background-color: #ff0000;} ";
 const char HTTP_HM_STYLE[]  PROGMEM = "input.lnkbtn,button{background-color:#1fa3ec;}</style>";
 const char HTTP_TABLE[] PROGMEM = "<table class=tc><tr><td>Status 1</td><td bgcolor={c1}></td><td>Status 9</td><td bgcolor={c9}></td></tr><tr><td>Status 2</td><td bgcolor={c2}></td><td>Status 10</td><td bgcolor={c10}></td></tr><tr><td>Status 3</td><td bgcolor={c3}></td><td>Status 11</td><td bgcolor={c11}></td></tr><tr><td>Status 4</td><td bgcolor={c4}></td><td>Status 12</td><td bgcolor={c12}></td></tr><tr><td>Status 5</td><td bgcolor={c5}></td><td>Status 13</td><td bgcolor={c13}></td></tr><tr><td>Status 6</td><td bgcolor={c6}></td><td>Status 14</td><td bgcolor={c14}></td></tr><tr><td>Status 7</td><td bgcolor={c7}></td><td>Status 15</td><td bgcolor={c15}></td></tr><tr><td>Status 8</td><td bgcolor={c8}></td><td>Status 16</td><td bgcolor={c16}></td></tr></table>";
@@ -27,18 +27,22 @@ void startWebServer() {
 void webDefaultHtml() {
   String page = FPSTR(HTTP_HEAD);
   page += FPSTR(HTTP_SD_STYLE);
-  page += F("<body>");
+  page += FPSTR(HTTP_ALL_STYLE);
+  page += FPSTR(HTTP_HM_STYLE);
+  page += FPSTR(HTTP_HEAD_END);
+  page += F("<div class='fbg'>");
+  page += FPSTR(HTTP_TITLE_LABEL);
   page += FPSTR(HTTP_TABLE);
   for (int i = 0; i < GlobalConfig.NumLeds; i++) {
     String hexCol =  String(LEDConfig.Colors[i], HEX);
     for (int i = 0; 6 - hexCol.length(); i++)
       hexCol = "0" + hexCol;
-    Serial.println("WEB-Farbe LED "+String(i)+ " = "+hexCol);   
+    Serial.println("WEB-Farbe LED " + String(i) + " = " + hexCol);
     page.replace("{c" + String(i + 1) + "}", hexCol);
   }
   page += FPSTR(HTTP_CONFIG_BUTTON);
 
-  page += F("</body></html>");
+  page += F("</div></div></body></html>");
   page.replace("{v}", GlobalConfig.DeviceName);
   webServer.sendHeader("Content-Length", String(page.length()));
   webServer.send(200, "text/html", page);

@@ -50,7 +50,7 @@ struct globalconfig_t {
 #define COLOR_COUNT    10
 
 String Dimmer2ColorDefinition[COLOR_COUNT] {
-  "FF0000", "FFFF00", "00FF00", "8E44AD", "0000FF", "F39C12", "A3E4D7", "F5CBA7", "FFFFFF", "FFFFFF"
+  "00FF00", "F39C12", "FF0000", "FFFFFF", "0000FF", "00FF00", "F39C12", "FF0000", "FFFFFF", "0000FF"
 };
 
 enum DisplayStates {

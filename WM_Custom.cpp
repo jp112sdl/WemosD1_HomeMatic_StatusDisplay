@@ -593,7 +593,7 @@ void WiFiManager::handleWifiSave() {
   //}
   //parameters
   for (int i = 0; i < _paramsCount; i++) {
-    if (_params[i] == NULL) {
+  if (_params[i] == NULL) {
       break;
     }
     //read parameter
@@ -607,20 +607,20 @@ void WiFiManager::handleWifiSave() {
   }
 
   if (server->arg("ip") != "") {
-    DEBUG_WM(F("static ip"));
+  DEBUG_WM(F("static ip"));
     DEBUG_WM(server->arg("ip"));
     //_sta_static_ip.fromString(server->arg("ip"));
     String ip = server->arg("ip");
     optionalIPFromString(&_sta_static_ip, ip.c_str());
   }
   if (server->arg("gw") != "") {
-    DEBUG_WM(F("static gateway"));
+  DEBUG_WM(F("static gateway"));
     DEBUG_WM(server->arg("gw"));
     String gw = server->arg("gw");
     optionalIPFromString(&_sta_static_gw, gw.c_str());
   }
   if (server->arg("sn") != "") {
-    DEBUG_WM(F("static netmask"));
+  DEBUG_WM(F("static netmask"));
     DEBUG_WM(server->arg("sn"));
     String sn = server->arg("sn");
     optionalIPFromString(&_sta_static_sn, sn.c_str());
