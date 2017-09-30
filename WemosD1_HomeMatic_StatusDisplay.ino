@@ -70,7 +70,7 @@ struct udp_t {
 //WifiManager - don't touch
 byte configPortalTimeout    = 180;
 bool shouldSaveConfig       = false;
-String bootConfigJsonFile   = "config.json";
+String configJsonFile   = "config.json";
 #define WM_DEBUG_OUTPUT  true
 char ip[IP_SIZE]             = "0.0.0.0";
 char netmask[IP_SIZE]        = "0.0.0.0";

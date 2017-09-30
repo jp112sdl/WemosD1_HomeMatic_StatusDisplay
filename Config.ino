@@ -2,9 +2,9 @@ bool loadSystemConfig() {
   Serial.println("mounting FS...");
   if (SPIFFS.begin()) {
     Serial.println("mounted file system");
-    if (SPIFFS.exists("/" + bootConfigJsonFile)) {
+    if (SPIFFS.exists("/" + configJsonFile)) {
       Serial.println("reading config file");
-      File configFile = SPIFFS.open("/" + bootConfigJsonFile, "r");
+      File configFile = SPIFFS.open("/" + configJsonFile, "r");
       if (configFile) {
         Serial.println("opened config file");
         size_t size = configFile.size();
@@ -46,7 +46,7 @@ bool loadSystemConfig() {
       }
       return true;
     } else {
-      Serial.println("/" + bootConfigJsonFile + " not found.");
+      Serial.println("/" + configJsonFile + " not found.");
       return false;
     }
     SPIFFS.end();
@@ -77,8 +77,8 @@ bool saveSystemConfig() {
     json["color" + String(i)] = Dimmer2ColorDefinition[i];
   }
 
-  SPIFFS.remove("/" + bootConfigJsonFile);
-  File configFile = SPIFFS.open("/" + bootConfigJsonFile, "w");
+  SPIFFS.remove("/" + configJsonFile);
+  File configFile = SPIFFS.open("/" + configJsonFile, "w");
   if (!configFile) {
     Serial.println("failed to open config file for writing");
   }
