@@ -1,21 +1,25 @@
 void getValuesFromCCU() {
   String ChannelName =  "CUxD." + getStateCUxD(GlobalConfig.DeviceName, "Address");
-  Serial.println("ChannelName = " + ChannelName);
-  Serial.println("\ngetValuesFromCCU: ");
+  DEBUG("ChannelName = " + ChannelName, "getValuesFromCCU()", _slInformational);
 
-  for (int i = 1; i < 17; i++) {
+  String _DebugText = "";
+  byte _maxChannels = GlobalConfig.NumLeds + 1;
+  if (GlobalConfig.NumLeds > 16)
+    _maxChannels = 17;
+
+  for (int i = 1; i < _maxChannels; i++) {
     String val = getStateCUxD(ChannelName + ":" + String(i) + ".LEVEL", "State");
     if (val != "null") {
       float a = val.toFloat();
       int dimVal = a * 10;
-      Serial.print("dimVal = " + String(dimVal) + "; ");
+      _DebugText += "dimVal = " + String(dimVal) + "; ";
       int color = dim2val(dimVal);
       int ledNum = i - 1;
       LEDConfig.Blink[ledNum] =  (dimVal >= GlobalConfig.DimBlink);
       setLed(ledNum, color);
     }
   }
-  Serial.println();
+  DEBUG("getValuesFromCCU: " + _DebugText, "getValuesFromCCU()", _slInformational);
 }
 
 String getStateCUxD(String id, String type) {
@@ -33,13 +37,13 @@ String getStateCUxD(String id, String type) {
         payload = http.getString();
       }
       if (httpCode != 200) {
-        Serial.println("HTTP " + id + " fail");
+        DEBUG("HTTP " + id + " fail", "getStateCUxD()", _slError);
       }
       http.end();
 
       payload = payload.substring(payload.indexOf("<ret>"));
       payload = payload.substring(5, payload.indexOf("</ret>"));
-      //Serial.println("result: " + payload);
+      DEBUG("result: " + payload, "getStateCUxD()", _slInformational);
 
       return payload;
     } else {

@@ -20,7 +20,7 @@ int dim2val(int dimVal) {
   int hex = 0;
   char hexArray[HEXARRAY_SIZE];
   if (dimVal > 0) {
-    //Serial.println("requested color value = " + String(Dimmer2ColorDefinition[dimVal - 1]));
+    //DEBUG("requested color value = " + String(Dimmer2ColorDefinition[dimVal - 1]));
     String hexValue = Dimmer2ColorDefinition[dimVal - 1];
     hexValue.toCharArray(hexArray, HEXARRAY_SIZE);
     hex = x2i(hexArray);
@@ -30,3 +30,9 @@ int dim2val(int dimVal) {
   return hex;
 }
 
+String IpAddress2String(const IPAddress& ipAddress) {
+  return String(ipAddress[0]) + String(".") +\
+  String(ipAddress[1]) + String(".") +\
+  String(ipAddress[2]) + String(".") +\
+  String(ipAddress[3]); 
+}

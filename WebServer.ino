@@ -1,9 +1,8 @@
 const char HTTP_TITLE_LABEL[] PROGMEM = "<div class='l lt'><label>{v}</label><hr /></div>";
-const char HTTP_SD_STYLE[] PROGMEM = "<style>table.tc td {  width: 60px; padding:10px;}</style>";
 const char HTTP_CONFIG_BUTTON[] PROGMEM = "<div></div><hr /><div></div><div><input class='lnkbtn' type='button' value='Konfiguration' onclick=\"window.location.href='/config'\" /></div><div><input class='lnkbtn' type='button' value='Firmware Update' onclick=\"window.location.href='/update'\" /></div>";
-const char HTTP_ALL_STYLE[] PROGMEM = "<style>div {white-space: nowrap;} input[type=text] {width:95%;} .green {color:green;} .red {color:red;} .tdr {float:right;} .tdl { width: 1px;} input.lnkbtn,input.fwbtn {-webkit-appearance: button;-moz-appearance: button;appearance: button;} body {background-color: #303030;} input.lnkbtn,button,input.fwbtn{cursor: pointer;color:#fff;line-height:2.4rem;font-size:1.2rem;width:100%;padding:5px;} input,button,input.lnkbtn,input.fwbtn {border: 0;border-radius: 0.3rem;} .c{text-align: center;} .k{font-style:italic;} .fbg {background-color: #eee;} div,input{padding:5px;font-size:1em;} .i{text-align: right; width: 45% !important;} body{text-align: center;font-family:verdana;} .l{no-repeat left center;background-size: 1em;} .q{float: right;width: 64px;text-align: right;} .ls {font-weight: bold;text-align: center;font-size: 300%;} .lt{font-size: 150%;text-align: center;} table{width:100%;} td{max-width:50%;font-weight: bold;} input.fwbtn {display: none; background-color: #ff0000;} ";
-const char HTTP_HM_STYLE[]  PROGMEM = "input.lnkbtn,button{background-color:#1fa3ec;}</style>";
-const char HTTP_TABLE[] PROGMEM = "<table class=tc><tr><td>Status 1</td><td bgcolor={c1}></td><td>Status 9</td><td bgcolor={c9}></td></tr><tr><td>Status 2</td><td bgcolor={c2}></td><td>Status 10</td><td bgcolor={c10}></td></tr><tr><td>Status 3</td><td bgcolor={c3}></td><td>Status 11</td><td bgcolor={c11}></td></tr><tr><td>Status 4</td><td bgcolor={c4}></td><td>Status 12</td><td bgcolor={c12}></td></tr><tr><td>Status 5</td><td bgcolor={c5}></td><td>Status 13</td><td bgcolor={c13}></td></tr><tr><td>Status 6</td><td bgcolor={c6}></td><td>Status 14</td><td bgcolor={c14}></td></tr><tr><td>Status 7</td><td bgcolor={c7}></td><td>Status 15</td><td bgcolor={c15}></td></tr><tr><td>Status 8</td><td bgcolor={c8}></td><td>Status 16</td><td bgcolor={c16}></td></tr></table>";
+//const char HTTP_TABLE[] PROGMEM = "<table class=tc><tr><td>Status 1</td><td bgcolor={c1}></td><td>Status 9</td><td bgcolor={c9}></td></tr><tr><td>Status 2</td><td bgcolor={c2}></td><td>Status 10</td><td bgcolor={c10}></td></tr><tr><td>Status 3</td><td bgcolor={c3}></td><td>Status 11</td><td bgcolor={c11}></td></tr><tr><td>Status 4</td><td bgcolor={c4}></td><td>Status 12</td><td bgcolor={c12}></td></tr><tr><td>Status 5</td><td bgcolor={c5}></td><td>Status 13</td><td bgcolor={c13}></td></tr><tr><td>Status 6</td><td bgcolor={c6}></td><td>Status 14</td><td bgcolor={c14}></td></tr><tr><td>Status 7</td><td bgcolor={c7}></td><td>Status 15</td><td bgcolor={c15}></td></tr><tr><td>Status 8</td><td bgcolor={c8}></td><td>Status 16</td><td bgcolor={c16}></td></tr></table>";
+const char HTTP_TABLE_START[] PROGMEM = "<table class=tc>";
+const char HTTP_TABLE_END[] PROGMEM = "</table>";
 const char HTTP_CONF[] PROGMEM = "<div>HomeMatic Konfiguration:</div><div id='div_ccu'><input type='text' id='ccuip' name='ccuip' length=1 placeholder='IP der CCU2' value='{ccuip}' pattern='((^|\\.)((25[0-5])|(2[0-4]\\d)|(1\\d\\d)|([1-9]?\\d))){4}$'></div><div id='div_devicename'><input type='text' id='devicename' name='devicename' length=1 placeholder='Ger&auml;tename' value='{v}' pattern='\\w{1,}'></div><div id='div_restorestate'><label for='restorestate'>Boot: Lade Werte von CCU</label><span class='ckb'><input id='restorestate' type='checkbox' name='restorestate' {ckrestore} value=1></span></div><div>LED Konfiguration:</div><div id='div_numleds'><input type='text' id='numleds' name='numleds' length=1 placeholder='Anzahl LEDs' value='{numleds}' required pattern='[0-9]{1,2}'></div><div id='div_rgborder'><label for='rgborder'>RGB Reihenfolge</label><span class='cob ckb'><select id='rgborder' name='rgborder'><option {srgb} value='10'>RGB</option><option {sgrb} value='66'>GRB</option></select></span></div><div>Dimmer-Konfiguration:</div><div id='div_color1'><input type='input' id='color1' name='color1' length=1 placeholder='Farbe f&uuml;r Dimmer 10..19%' value='{color1}' onchange='setColor()' > <input type='color' id='cp_color1' name='cp_color1' onchange='setCPColor()'></div><div id='div_color2'><input type='input' id='color2' name='color2' length=1 placeholder='Farbe f&uuml;r Dimmer 20..29%' value='{color2}' onchange='setColor()' > <input type='color' id='cp_color2' name='cp_color2' onchange='setCPColor()'></div><div id='div_color3'><input type='input' id='color3' name='color3' length=1 placeholder='Farbe f&uuml;r Dimmer 30..39%' value='{color3}' onchange='setColor()' > <input type='color' id='cp_color3' name='cp_color3' onchange='setCPColor()'></div><div id='div_color4'><input type='input' id='color4' name='color4' length=1 placeholder='Farbe f&uuml;r Dimmer 40..49%' value='{color4}' onchange='setColor()' > <input type='color' id='cp_color4' name='cp_color4' onchange='setCPColor()'></div><div id='div_color5'><input type='input' id='color5' name='color5' length=1 placeholder='Farbe f&uuml;r Dimmer 50..59%' value='{color5}' onchange='setColor()' > <input type='color' id='cp_color5' name='cp_color5' onchange='setCPColor()'></div><div id='div_color6'><input type='input' id='color6' name='color6' length=1 placeholder='Farbe f&uuml;r Dimmer 60..69%' value='{color6}' onchange='setColor()' > <input type='color' id='cp_color6' name='cp_color6' onchange='setCPColor()'></div><div id='div_color7'><input type='input' id='color7' name='color7' length=1 placeholder='Farbe f&uuml;r Dimmer 70..79%' value='{color7}' onchange='setColor()' > <input type='color' id='cp_color7' name='cp_color7' onchange='setCPColor()'></div><div id='div_color8'><input type='input' id='color8' name='color8' length=1 placeholder='Farbe f&uuml;r Dimmer 80..89%' value='{color8}' onchange='setColor()' > <input type='color' id='cp_color8' name='cp_color8' onchange='setCPColor()'></div><div id='div_color9'><input type='input' id='color9' name='color9' length=1 placeholder='Farbe f&uuml;r Dimmer 90..99%' value='{color9}' onchange='setColor()' > <input type='color' id='cp_color9' name='cp_color9' onchange='setCPColor()'></div><div id='div_color10'><input type='input' id='color10' name='color10' length=1 placeholder='Farbe f&uuml;r Dimmer 100%' value='{color10}' onchange='setColor()' > <input type='color' id='cp_color10' name='cp_color10' onchange='setCPColor()'></div><div>Blinken f&uuml;r Dimmer-Werte ab...<br/>(11 = kein blinken)</div><div id='div_dimblink'><input type='text' id='dimblink' name='dimblink' length=1 placeholder='Blinken f&uuml;r Dimmer-Werte ab...' value='{dimblink}' required pattern='[0-9]{1,2}'></div>";
 const char HTTP_SAVE_BUTTON[] PROGMEM = "<div><button name='btnSave' value='1' type='submit'>Speichern</button></div>";
 const char HTTP_HOME_BUTTON[] PROGMEM = "<div><input class='lnkbtn' type='button' value='Zur&uuml;ck' onclick=\"window.location.href='/'\" /></div>";
@@ -21,7 +20,7 @@ void startWebServer() {
   webServer.on("/", webDefaultHtml);
   httpUpdater.setup(&webServer);
   webServer.begin();
-  Serial.println("Starte Webserver an Port " + String(WEBSERVER_PORT) + "...");
+  DEBUG("Starte Webserver an Port " + String(WEBSERVER_PORT) + "...", "startWebServer()", _slInformational);
 }
 
 void webDefaultHtml() {
@@ -32,12 +31,30 @@ void webDefaultHtml() {
   page += FPSTR(HTTP_HEAD_END);
   page += F("<div class='fbg'>");
   page += FPSTR(HTTP_TITLE_LABEL);
-  page += FPSTR(HTTP_TABLE);
+
+  page += FPSTR(HTTP_TABLE_START);
+
+  String _table = "";
+  for (int i = 1; i < GlobalConfig.NumLeds + 1; i++) {
+    _table += "<tr><td>Status " + String(i) + "</td><td bgcolor={c" + String(i) + "}>"+((LEDConfig.Blink[i-1])?"<center>B</center>":"")+"</td>";
+    if (i + 1 > GlobalConfig.NumLeds) {
+      _table += "</tr>";
+    } else {
+      _table += "<td>Status " + String(i + 1) + "</td><td bgcolor={c" + String(i + 1) + "}>"+((LEDConfig.Blink[i-1])?"<center>B</center>":"")+"</td>";
+    }
+    i++;
+  }
+
+  page += _table;
+
+
+  page += FPSTR(HTTP_TABLE_END);
+
   for (int i = 0; i < GlobalConfig.NumLeds; i++) {
     String hexCol =  String(LEDConfig.Colors[i], HEX);
     for (int i = 0; 6 - hexCol.length(); i++)
       hexCol = "0" + hexCol;
-    Serial.println("WEB-Farbe LED " + String(i) + " = " + hexCol);
+    //DEBUG("WEB-Farbe LED " + String(i) + " = " + hexCol, "webDefaultHtml()", _slInformational);
     page.replace("{c" + String(i + 1) + "}", hexCol);
   }
   page += FPSTR(HTTP_CONFIG_BUTTON);
@@ -45,7 +62,7 @@ void webDefaultHtml() {
   page += F("</div></div></body></html>");
   page.replace("{v}", GlobalConfig.DeviceName);
   webServer.sendHeader("Content-Length", String(page.length()));
-  webServer.send(200, "text/html", page);
+  webServer.send(200, "text/html\r\nRefresh:10", page);
 }
 
 void webSetLed() {
@@ -90,7 +107,7 @@ void webSetLed() {
       }
       if (webServer.argName(i) == "dim") {
         int dimVal = webServer.arg(i).toInt();
-        Serial.println("Got Dimmer Value " + String(dimVal) + " for LED " + String(led));
+        DEBUG("Got Dimmer for LED " + String(led) + " value = " + String(dimVal), "webSetLed()", _slInformational);
         blink = (dimVal >= GlobalConfig.DimBlink);
         hex = dim2val(dimVal);
         useHex = true;
@@ -118,7 +135,7 @@ void webWakeup() {
     for (int i = 0; i < webServer.args(); i++) {
       if (webServer.argName(i) == "t") {
         _DisplayTimeoutSeconds = webServer.arg(i).toInt();
-        Serial.println("wake up for " + String(_DisplayTimeoutSeconds) + " seconds");
+        DEBUG("wake up for " + String(_DisplayTimeoutSeconds) + " seconds", "webWakeup()", _slInformational);
       }
     }
   }
@@ -138,7 +155,7 @@ void webConfig() {
 
   if (webServer.args() > 0) {
     for (int i = 0; i < webServer.args(); i++) {
-      Serial.println("Arg(" + String(i) + ") = " + webServer.argName(i) + " [" + webServer.arg(i) + "]");
+      DEBUG("Arg(" + String(i) + ") = " + webServer.argName(i) + " [" + webServer.arg(i) + "]", "webConfig()", _slInformational);
       if (webServer.argName(i) == "ccuip")
         strcpy(GlobalConfig.CcuIp, webServer.arg(i).c_str());
 

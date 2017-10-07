@@ -11,11 +11,11 @@ void handlePIR() {
   if (PIRInterruptDetected) {
     switch (PIRInterruptDetected) {
       case 1:
-        Serial.println("PIR Interrupt HIGH detected!");
+        DEBUG("PIR Interrupt HIGH detected!","handlePIR()",_slInformational);
         setLedMode(Wake, 0);
         break;
       case 2:
-        Serial.println("PIR Interrupt LOW detected!");
+        DEBUG("PIR Interrupt LOW detected!","handlePIR()",_slInformational);
         setLedMode(Sleep);
         break;
     }

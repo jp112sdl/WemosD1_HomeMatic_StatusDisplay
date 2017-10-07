@@ -6,8 +6,10 @@ bool doWifiConnect() {
   const char* netmaskStr = netmask; byte netmaskBytes[4]; parseBytes(netmaskStr, '.', netmaskBytes, 4, 10);
   const char* gwStr = gw; byte gwBytes[4]; parseBytes(gwStr, '.', gwBytes, 4, 10);
   if (!startWifiManager && _ssid != "" && _psk != "" ) {
-    Serial.println(F("Connecting WLAN the classic way..."));
-    if (WM_DEBUG_OUTPUT) Serial.println("Connecting to SSID: "+_ssid+" with KEY: "+_psk);
+    DEBUG(F("Connecting WLAN the classic way..."));
+#ifdef SERIALDEBUG && WM_DEBUG_OUTPUT
+    DEBUG("Connecting to SSID: " + _ssid); //+" with KEY: "+_psk);
+#endif
     WiFi.disconnect();
     WiFi.mode(WIFI_STA);
     WiFi.hostname(GlobalConfig.DeviceName);
@@ -24,11 +26,13 @@ bool doWifiConnect() {
       }
       delay(500);
     }
-    Serial.println("Wifi Connected");
+    DEBUG("Wifi Connected", "doWifiConnect()", _slInformational);
     return true;
   } else {
     WiFiManager wifiManager;
-    wifiManager.setDebugOutput(WM_DEBUG_OUTPUT);
+#ifdef SERIALDEBUG && WM_DEBUG_OUTPUT
+    wifiManager.setDebugOutput(true);
+#endif
     wifiManager.setAPCallback(configModeCallback);
     wifiManager.setSaveConfigCallback(saveConfigCallback);
 
@@ -112,7 +116,7 @@ bool doWifiConnect() {
     if (startWifiManager == true) {
       digitalWrite(LED_BUILTIN, LOW);
       if (!wifiManager.startConfigPortal(Hostname.c_str())) {
-        Serial.println("failed to connect and hit timeout");
+        DEBUG("failed to connect and hit timeout");
         delay(1000);
         ESP.restart();
       }
@@ -122,11 +126,11 @@ bool doWifiConnect() {
 
     wifiManager.autoConnect(Hostname.c_str());
 
-    Serial.println("Wifi Connected");
-    Serial.println("CUSTOM STATIC IP: " + String(ip) + " Netmask: " + String(netmask) + " GW: " + String(gw));
+    DEBUG("Wifi Connected");
+    DEBUG("CUSTOM STATIC IP: " + String(ip) + " Netmask: " + String(netmask) + " GW: " + String(gw));
     if (shouldSaveConfig) {
       if (String(custom_ip.getValue()).length() > 5) {
-        Serial.println("Custom IP Address is set!");
+        DEBUG("Custom IP Address is set!");
         strcpy(ip, custom_ip.getValue());
         strcpy(netmask, custom_netmask.getValue());
         strcpy(gw, custom_gw.getValue());
@@ -164,11 +168,11 @@ bool doWifiConnect() {
 }
 
 void configModeCallback (WiFiManager *myWiFiManager) {
-  Serial.println("AP-Modus ist aktiv!");
+  DEBUG("AP-Modus ist aktiv!");
 }
 
 void saveConfigCallback () {
-  Serial.println("Should save config");
+  DEBUG("Should save config");
   shouldSaveConfig = true;
 }
 
@@ -184,13 +188,8 @@ void parseBytes(const char* str, char sep, byte* bytes, int maxBytes, int base) 
 }
 
 void printWifiStatus() {
-  Serial.print("SSID: ");
-  Serial.println(WiFi.SSID());
-  IPAddress ip = WiFi.localIP();
-  Serial.print("IP Address: ");
-  Serial.println(ip);
-  long rssi = WiFi.RSSI();
-  Serial.print("signal strength (RSSI):");
-  Serial.print(rssi);
-  Serial.println(" dBm");
+  DEBUG("SSID: " + WiFi.SSID());
+  DEBUG("IP Address: " + IpAddress2String(WiFi.localIP()));
+  DEBUG("Gateway Address: " + IpAddress2String(WiFi.gatewayIP()));
+  DEBUG("signal strength (RSSI):" + String(WiFi.RSSI()) + " dBm");
 }

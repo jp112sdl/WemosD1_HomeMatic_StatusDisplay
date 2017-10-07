@@ -8,11 +8,32 @@
 #include <WiFiUdp.h>
 #include <ArduinoOTA.h>
 #include <ESP8266HTTPUpdateServer.h>
+#include "global_css.h"
 
-#define CONFIG_PIN     D1 //Taster gegen GND, um den Konfigurationsmodus zu aktivieren
+#define                       SERIALDEBUG
+#define                       WM_DEBUG_OUTPUT
+#define                       UDPDEBUG
+
+#define CONFIG_PIN     D1
 #define PIR_PIN        D5
 #define WEBSERVER_PORT 80
 #define UDPPORT        6690
+
+#ifdef UDPDEBUG
+const char * SYSLOGIP = "192.168.1.251";
+#define SYSLOGUDPPORT   514
+#endif
+
+enum _SyslogSeverity {
+  _slEmergency,
+  _slAlert,
+  _slCritical,
+  _slError,
+  _slWarning,
+  _slNotice,
+  _slInformational,
+  _slDebug
+};
 
 // FastLED
 #define LED_PIN D7
@@ -71,7 +92,6 @@ struct udp_t {
 byte configPortalTimeout    = 180;
 bool shouldSaveConfig       = false;
 String configJsonFile   = "config.json";
-#define WM_DEBUG_OUTPUT  true
 char ip[IP_SIZE]             = "0.0.0.0";
 char netmask[IP_SIZE]        = "0.0.0.0";
 char gw[IP_SIZE]             = "0.0.0.0";
@@ -84,6 +104,7 @@ bool OTAStart = false;
 bool DisplayState = Wake;
 bool brightnesskeylast = false;
 bool blinkState = false;
+bool UDPReady = false;
 volatile byte PIRInterruptDetected = 0;
 
 void setup() {
@@ -92,11 +113,13 @@ void setup() {
   initPIR();
 
   digitalWrite(LED_BUILTIN, HIGH);
+#ifdef SERIALDEBUG
   Serial.begin(115200);
-  Serial.println("Programmstart...");
+#endif
+  DEBUG("Programmstart...");
 
   if (digitalRead(CONFIG_PIN) == LOW) {
-    Serial.println("Taster gedrückt - Config Mode wird gestartet!");
+    DEBUG("Taster gedrückt - Config Mode wird gestartet!");
     startWifiManager = true;
     bool state = LOW;
     for (int i = 0; i < 7; i++) {
@@ -108,7 +131,7 @@ void setup() {
   loadSystemConfig();
 
   if (doWifiConnect()) {
-    Serial.println("WLAN erfolgreich verbunden!");
+    DEBUG("WLAN erfolgreich verbunden!");
     printWifiStatus();
   } else ESP.restart();
 
@@ -125,7 +148,7 @@ void setup() {
   if (GlobalConfig.RestoreStateFromCCU)
     getValuesFromCCU();
 
-  Serial.println("Boot abgeschlossen");
+  DEBUG(String(GlobalConfig.DeviceName) + " - Boot abgeschlossen, SSID = " + WiFi.SSID() + ", IP = " + String(IpAddress2String(WiFi.localIP())) + ", RSSI = " + WiFi.RSSI() + ", MAC = " + WiFi.macAddress(), "Setup", _slInformational);
 }
 
 void loop() {
@@ -145,7 +168,7 @@ void loop() {
 
     if (DisplayTimeoutSeconds > 0 && DisplayState == Wake && millis() - LastDisplayTimeOutMillis > DisplayTimeoutSeconds * 1000) {
       LastDisplayTimeOutMillis = millis();
-      Serial.println("Display Timeout");
+      DEBUG("Display Timeout", "loop()", _slInformational);
       setLedMode(Sleep);
     }
 
@@ -171,7 +194,7 @@ void loop() {
         brightness = brightness + 25;
         if (brightness > 255) brightness = 10;
         setLedBrightness(brightness);
-        Serial.println("BRIGHTNESS_KEY pressed! Set brightness to " + String(brightness));
+        DEBUG("BRIGHTNESS_KEY pressed! Set brightness to " + String(brightness), "loop()", _slInformational);
         delay(10); //Entprellen
       }
     } else {

@@ -1,21 +1,20 @@
 bool loadSystemConfig() {
-  Serial.println("mounting FS...");
+  DEBUG("mounting FS...","loadSystemConfig()",_slInformational);
   if (SPIFFS.begin()) {
-    Serial.println("mounted file system");
+    DEBUG("mounted file system","loadSystemConfig()",_slInformational);
     if (SPIFFS.exists("/" + configJsonFile)) {
-      Serial.println("reading config file");
+      DEBUG("reading config file","loadSystemConfig()",_slInformational);
       File configFile = SPIFFS.open("/" + configJsonFile, "r");
       if (configFile) {
-        Serial.println("opened config file");
+        DEBUG("opened config file","loadSystemConfig()",_slInformational);
         size_t size = configFile.size();
         std::unique_ptr<char[]> buf(new char[size]);
         configFile.readBytes(buf.get(), size);
         DynamicJsonBuffer jsonBuffer;
         JsonObject& json = jsonBuffer.parseObject(buf.get());
         json.printTo(Serial);
-        Serial.println("");
         if (json.success()) {
-          Serial.println("\nparsed json");
+          DEBUG("parsed json","loadSystemConfig()",_slInformational);
           ((json["ip"]).as<String>()).toCharArray(ip, IP_SIZE);
           ((json["netmask"]).as<String>()).toCharArray(netmask, IP_SIZE);
           ((json["gw"]).as<String>()).toCharArray(gw, IP_SIZE);
@@ -41,24 +40,24 @@ bool loadSystemConfig() {
           GlobalConfig.LedBrightness = (json["brightness"]).as<byte>();
           if (GlobalConfig.LedBrightness < 5) GlobalConfig.LedBrightness = 255;
         } else {
-          Serial.println("failed to load json config");
+          DEBUG("failed to load json config","loadSystemConfig()",_slError);
         }
       }
       return true;
     } else {
-      Serial.println("/" + configJsonFile + " not found.");
+      DEBUG("/" + configJsonFile + " not found.","loadSystemConfig()",_slWarning);
       return false;
     }
     SPIFFS.end();
   } else {
-    Serial.println("failed to mount FS");
+    DEBUG("failed to mount FS","loadSystemConfig()",_slError);
     return false;
   }
 }
 
 bool saveSystemConfig() {
   SPIFFS.begin();
-  Serial.println("saving config");
+  DEBUG("saving config","saveSystemConfig()",_slInformational);
   DynamicJsonBuffer jsonBuffer;
   JsonObject& json = jsonBuffer.createObject();
   json["ip"] = ip;
@@ -80,11 +79,10 @@ bool saveSystemConfig() {
   SPIFFS.remove("/" + configJsonFile);
   File configFile = SPIFFS.open("/" + configJsonFile, "w");
   if (!configFile) {
-    Serial.println("failed to open config file for writing");
+    DEBUG("failed to open config file for writing","saveSystemConfig()",_slError);
   }
 
   json.printTo(Serial);
-  Serial.println("");
   json.printTo(configFile);
   configFile.close();
 

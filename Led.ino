@@ -2,15 +2,15 @@ void initLEDs() {
   Serial.print("\nEOrder = ");
   switch (GlobalConfig.SelectedEOrder) {
     case _RGB:
-      Serial.println("RGB");
+      DEBUG("RGB","initLEDs()",_slInformational);
       FastLED.addLeds<LED_TYPE, LED_PIN, RGB>(LEDConfig.leds, GlobalConfig.NumLeds);
       break;
     case _GRB:
-      Serial.println("GRB");
+      DEBUG("GRB","initLEDs()",_slInformational);
       FastLED.addLeds<LED_TYPE, LED_PIN, GRB>(LEDConfig.leds, GlobalConfig.NumLeds);
       break;
     default:
-      Serial.println("GRB");
+      DEBUG("GRB","initLEDs()",_slInformational);
       FastLED.addLeds<LED_TYPE, LED_PIN, GRB>(LEDConfig.leds, GlobalConfig.NumLeds);
       break;
   }
@@ -36,7 +36,7 @@ void setLedBrightness(byte brightness) {
 }
 
 void setLed(int led, int hex) {
-  Serial.println("setLed for LED " + String(led) + " value = " + String(hex, HEX));
+  DEBUG("setLed for LED " + String(led) + " value = " + String(hex, HEX),"setLed()",_slInformational);
   if (DisplayState == Wake) {
     if (led == -1) {
       for (int i = 0; i < GlobalConfig.NumLeds; i++) {
@@ -67,14 +67,14 @@ void setLedMode(byte Mode, int _DisplayTimeoutSeconds) {
   if (DisplayState != Mode) {
     DisplayState = Mode;
     if (Mode == Sleep) {
-      Serial.println("setLedMode to SLEEP");
+      DEBUG("setLedMode to SLEEP","setLedMode()",_slInformational);
       for (int i = 0; i < GlobalConfig.NumLeds; i++) {
         LEDConfig.ledsBackup[i] = LEDConfig.leds[i];
       }
       fill_solid(LEDConfig.leds, GlobalConfig.NumLeds, CRGB::Black);
     } else {
       DisplayTimeoutSeconds = _DisplayTimeoutSeconds;
-      Serial.println("setLedMode to WAKE with Display Timeout " + String(DisplayTimeoutSeconds) + " seconds");
+      DEBUG("setLedMode to WAKE with Display Timeout " + String(DisplayTimeoutSeconds) + " seconds","setLedMode()",_slInformational);
       if (DisplayTimeoutSeconds > 0 )
         LastDisplayTimeOutMillis = millis();
 
