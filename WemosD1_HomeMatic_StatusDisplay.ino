@@ -9,10 +9,11 @@
 #include <ArduinoOTA.h>
 #include <ESP8266HTTPUpdateServer.h>
 #include "global_css.h"
+#include "webConfigHTML.h"
 
 #define                       SERIALDEBUG
 #define                       WM_DEBUG_OUTPUT
-#define                       UDPDEBUG
+//#define                       UDPDEBUG
 
 #define CONFIG_PIN     D1
 #define PIR_PIN        D5

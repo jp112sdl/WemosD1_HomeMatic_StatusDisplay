@@ -60,7 +60,7 @@ bool doWifiConnect() {
     }
     WiFiManagerParameter custom_rgborder("rgborder", "RGB Reihenfolge", "", 8, INPUT_COMBOBOX, eorder.c_str());
 
-    WiFiManagerParameter custom_text_dimmerconfig("<div>Dimmer-Konfiguration:</div>");
+    WiFiManagerParameter custom_text_dimmerconfig("<div>CUxD Dimmer-Konfiguration:</div>");
     WiFiManagerParameter custom_color1("color1", "Farbe f&uuml;r Dimmer 10..19%", Dimmer2ColorDefinition[0].c_str(), VARIABLE_SIZE, INPUT_COLOR);
     WiFiManagerParameter custom_color2("color2", "Farbe f&uuml;r Dimmer 20..29%", Dimmer2ColorDefinition[1].c_str(), VARIABLE_SIZE, INPUT_COLOR);
     WiFiManagerParameter custom_color3("color3", "Farbe f&uuml;r Dimmer 30..39%", Dimmer2ColorDefinition[2].c_str(), VARIABLE_SIZE, INPUT_COLOR);
@@ -80,14 +80,14 @@ bool doWifiConnect() {
     WiFiManagerParameter custom_netmask("custom_netmask", "Netzmaske", "", IP_SIZE, INPUT_TEXT, "pattern='((^|\\.)((25[0-5])|(2[0-4]\\d)|(1\\d\\d)|([1-9]?\\d))){4}$'");
     WiFiManagerParameter custom_gw("custom_gw", "Gateway", "", IP_SIZE, INPUT_TEXT, "pattern='((^|\\.)((25[0-5])|(2[0-4]\\d)|(1\\d\\d)|([1-9]?\\d))){4}$'");
 
+    wifiManager.addParameter(&custom_text_led);
+    wifiManager.addParameter(&custom_numleds);
+    wifiManager.addParameter(&custom_rgborder);
+    
     wifiManager.addParameter(&custom_text_hm);
     wifiManager.addParameter(&custom_ccuip);
     wifiManager.addParameter(&custom_devicename);
     wifiManager.addParameter(&custom_cbrestorestate);
-
-    wifiManager.addParameter(&custom_text_led);
-    wifiManager.addParameter(&custom_numleds);
-    wifiManager.addParameter(&custom_rgborder);
 
     wifiManager.addParameter(&custom_text_dimmerconfig);
     wifiManager.addParameter(&custom_color1);
