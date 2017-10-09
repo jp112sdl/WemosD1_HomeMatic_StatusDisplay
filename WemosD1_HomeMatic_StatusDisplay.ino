@@ -13,7 +13,7 @@
 
 #define                       SERIALDEBUG
 #define                       WM_DEBUG_OUTPUT
-//#define                       UDPDEBUG
+#define                       UDPDEBUG
 
 #define CONFIG_PIN     D1
 #define PIR_PIN        D5

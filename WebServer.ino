@@ -8,7 +8,7 @@ const char HTTP_HOME_BUTTON[] PROGMEM = "<div><input class='lnkbtn' type='button
 
 void startWebServer() {
   webServer.on("/set", webSetLed);
-  webServer.on("/getValuesFromCCU", getValuesFromCCU);
+  webServer.on("/getValuesFromCCU", []() { webServer.send(200, "text/plain", "<getValuesFromCCU>ok</getValuesFromCCU>"); getValuesFromCCU(); });
   webServer.on("/sleep", webSleep);
   webServer.on("/wakeup", webWakeup);
   webServer.on("/wifiStatus", webWifiStatus);
