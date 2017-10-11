@@ -40,11 +40,11 @@ void webDefaultHtml() {
   }
   for (int row = 1; row < rows + 1; row ++) {
 
-    _table += "<tr><td bgcolor={c" + String(row) + "}>" + ((LEDConfig.Blink[row - 1]) ? "<center>B</center>" : "") + "</td><td>Status " + String(row) + "</td>";
+    _table += "<tr><td bgcolor={c" + String(row) + "}>" + ((LEDConfig.Blink[row - 1]) ? "<center>B</center>" : "") + "</td><td>" + String(row) + "</td>";
     if ((rows + row) > GlobalConfig.NumLeds) {
       _table += "</tr>";
     } else {
-      _table += "<td>Status " + String(rows + row) + "</td><td bgcolor={c" + String(rows + row) + "}>" + ((LEDConfig.Blink[(rows + row) - 1]) ? "<center>B</center>" : "") + "</td></tr>";
+      _table += "<td align='right'>" + String(rows + row) + "</td><td bgcolor={c" + String(rows + row) + "}>" + ((LEDConfig.Blink[(rows + row) - 1]) ? "<center>B</center>" : "") + "</td></tr>";
     }
   }
 
