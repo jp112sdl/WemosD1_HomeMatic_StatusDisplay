@@ -16,7 +16,7 @@ void getValuesFromCCU() {
         _DebugText += "dimVal = " + String(dimVal) + "; ";
         int color = dim2val(dimVal);
         int ledNum = i - 1;
-        LEDConfig.Blink[ledNum] =  (dimVal >= GlobalConfig.DimBlink);
+        LEDConfig.Blink[ledNum] = (dimVal >= GlobalConfig.DimBlink);
         setLed(ledNum, color);
       }
     }
@@ -47,7 +47,7 @@ String getStateCUxD(String id, String type) {
 
       payload = payload.substring(payload.indexOf("<ret>"));
       payload = payload.substring(5, payload.indexOf("</ret>"));
-      DEBUG("result: " + payload, "getStateCUxD()", _slInformational);
+      //DEBUG("result: " + payload, "getStateCUxD()", _slInformational);
 
       return payload;
     } else {

@@ -1,6 +1,5 @@
 const char HTTP_TITLE_LABEL[] PROGMEM = "<div class='l lt'><label>{v}</label><hr /></div>";
 const char HTTP_CONFIG_BUTTON[] PROGMEM = "<div></div><hr /><div></div><div><input class='lnkbtn' type='button' value='Konfiguration' onclick=\"window.location.href='/config'\" /></div><div><input class='lnkbtn' type='button' value='Firmware Update' onclick=\"window.location.href='/update'\" /></div>";
-//const char HTTP_TABLE[] PROGMEM = "<table class=tc><tr><td>Status 1</td><td bgcolor={c1}></td><td>Status 9</td><td bgcolor={c9}></td></tr><tr><td>Status 2</td><td bgcolor={c2}></td><td>Status 10</td><td bgcolor={c10}></td></tr><tr><td>Status 3</td><td bgcolor={c3}></td><td>Status 11</td><td bgcolor={c11}></td></tr><tr><td>Status 4</td><td bgcolor={c4}></td><td>Status 12</td><td bgcolor={c12}></td></tr><tr><td>Status 5</td><td bgcolor={c5}></td><td>Status 13</td><td bgcolor={c13}></td></tr><tr><td>Status 6</td><td bgcolor={c6}></td><td>Status 14</td><td bgcolor={c14}></td></tr><tr><td>Status 7</td><td bgcolor={c7}></td><td>Status 15</td><td bgcolor={c15}></td></tr><tr><td>Status 8</td><td bgcolor={c8}></td><td>Status 16</td><td bgcolor={c16}></td></tr></table>";
 const char HTTP_TABLE_START[] PROGMEM = "<table class=tc>";
 const char HTTP_TABLE_END[] PROGMEM = "</table>";
 const char HTTP_SAVE_BUTTON[] PROGMEM = "<div><button name='btnSave' value='1' type='submit'>Speichern</button></div>";
@@ -41,7 +40,7 @@ void webDefaultHtml() {
   }
   for (int row = 1; row < rows + 1; row ++) {
 
-    _table += "<tr><td>Status " + String(row) + "</td><td bgcolor={c" + String(row) + "}>" + ((LEDConfig.Blink[row - 1]) ? "<center>B</center>" : "") + "</td>";
+    _table += "<tr><td bgcolor={c" + String(row) + "}>" + ((LEDConfig.Blink[row - 1]) ? "<center>B</center>" : "") + "</td><td>Status " + String(row) + "</td>";
     if ((rows + row) > GlobalConfig.NumLeds) {
       _table += "</tr>";
     } else {
