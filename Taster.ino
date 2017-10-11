@@ -1,0 +1,59 @@
+unsigned long AnalogReadDebugMillis = 0;
+unsigned long KeyPressDownMillis = 0;
+unsigned long LastMillisKeyPress = 0;
+bool KeyPress = false;
+byte KeyDetected = 0;
+bool PRESS_LONGsent = false;
+String KeyChannelName = "";
+
+void handleKEY() {
+  uint8_t aVal = analogRead(A0);
+
+  int keys[] {20, 40, 48, 80, 100, 120, 140, 160, 196, 200, 220, 240, 260, 280, 300, 320};
+
+  if (millis() - AnalogReadDebugMillis > 1000) {
+    AnalogReadDebugMillis = millis();
+    DEBUG("analogRead Value = " + String(aVal), "handleKEY()", _slInformational);
+  }
+
+  for (int i = 0; i < 15; i++) {
+    if (aVal < keys[i] + KEYTOLERANCE && aVal > keys[i] - KEYTOLERANCE) {
+      KeyDetected = i + 1;
+      break;
+    } else {
+      KeyDetected = 0;
+    }
+  }
+
+  if (KeyDetected > 0) {
+    if (!KeyPress) {
+      KeyPressDownMillis = millis();
+      if (millis() - LastMillisKeyPress > KEYBOUNCEMILLIS) {
+        DEBUG("KEY Number " + String(KeyDetected) + " detected", "handleKEY()", _slInformational);
+        KeyChannelName =  "CUxD." + getStateCUxD(String(GlobalConfig.DeviceName) + "Taster:"+String(KeyDetected), "Address");
+        DEBUG("KeyChannelName = " + KeyChannelName, "handleKEY()", _slInformational);
+        LastMillisKeyPress = millis();
+        KeyPress = true;
+      }
+    }
+
+    if ((millis() - KeyPressDownMillis) > KEYPRESSLONGMILLIS && !PRESS_LONGsent) {
+      //PRESS_LONG
+      DEBUG("PRESS_LONG", "handleKEY()", _slInformational);
+      setStateCUxD(KeyChannelName + ".PRESS_LONG", "true");
+      PRESS_LONGsent = true;
+    }
+
+  } else {
+    if (KeyPress) {
+      if ((millis() - KeyPressDownMillis) < KEYPRESSLONGMILLIS) {
+        //PRESS_SHORT
+        DEBUG("PRESS_SHORT", "handleKEY()", _slInformational);
+        setStateCUxD(KeyChannelName + ".PRESS_SHORT", "true");
+      }
+    }
+    KeyPress = false;
+    PRESS_LONGsent = false;
+  }
+}
+

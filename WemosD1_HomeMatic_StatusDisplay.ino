@@ -12,13 +12,17 @@
 #include "webConfigHTML.h"
 
 #define                       SERIALDEBUG
-#define                       WM_DEBUG_OUTPUT
-#define                       UDPDEBUG
+//#define                       WM_DEBUG_OUTPUT
+//#define                       UDPDEBUG
 
-#define CONFIG_PIN     D1
-#define PIR_PIN        D5
-#define WEBSERVER_PORT 80
-#define UDPPORT        6690
+#define CONFIG_PIN            D1
+#define PIR_PIN               D5
+#define WEBSERVER_PORT        80
+#define UDPPORT             6690
+#define HTTPGETTIMEOUT      2000 // 2 Sekunden Timeout für Anfragen an die CCU
+#define KEYPRESSLONGMILLIS  1500 //ms für langen Tastendruck
+#define KEYBOUNCEMILLIS      500 //ms Mindestzeit zwischen 2 Tastendrücken
+#define KEYTOLERANCE          10 // +/-Toleranz für 16er Widerstands-/Tastermatrix
 
 #ifdef UDPDEBUG
 const char * SYSLOGIP = "192.168.1.251";
@@ -109,6 +113,7 @@ bool UDPReady = false;
 volatile byte PIRInterruptDetected = 0;
 
 void setup() {
+  pinMode(A0, INPUT);
   pinMode(CONFIG_PIN, INPUT_PULLUP);
   pinMode(LED_BUILTIN, OUTPUT);
   initPIR();
@@ -166,6 +171,8 @@ void loop() {
     handleUDP();
 
     handlePIR();
+
+    handleKEY();
 
     if (DisplayTimeoutSeconds > 0 && DisplayState == Wake && millis() - LastDisplayTimeOutMillis > DisplayTimeoutSeconds * 1000) {
       LastDisplayTimeOutMillis = millis();
