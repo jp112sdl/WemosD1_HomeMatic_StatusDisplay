@@ -6,18 +6,21 @@ const char HTTP_SAVE_BUTTON[] PROGMEM = "<div><button name='btnSave' value='1' t
 const char HTTP_HOME_BUTTON[] PROGMEM = "<div><input class='lnkbtn' type='button' value='Zur&uuml;ck' onclick=\"window.location.href='/'\" /></div>";
 
 void startWebServer() {
-  webServer.on("/set", webSetLed);
-  webServer.on("/getValuesFromCCU", []() { webServer.send(200, "text/plain", "<getValuesFromCCU>ok</getValuesFromCCU>"); getValuesFromCCU(); });
-  webServer.on("/sleep", webSleep);
-  webServer.on("/wakeup", webWakeup);
-  webServer.on("/wifiStatus", webWifiStatus);
-  webServer.on("/config", webConfig);
-  webServer.onNotFound([]() {
-    webServer.send(404, "text/plain", "Hier gibt es nichts zu sehen!");
+  WebServer.on("/set", webSetLed);
+  WebServer.on("/getValuesFromCCU", []() {
+    WebServer.send(200, "text/plain", "<getValuesFromCCU>ok</getValuesFromCCU>");
+    getValuesFromCCU();
   });
-  webServer.on("/", webDefaultHtml);
-  httpUpdater.setup(&webServer);
-  webServer.begin();
+  WebServer.on("/sleep", webSleep);
+  WebServer.on("/wakeup", webWakeup);
+  WebServer.on("/wifiStatus", webWifiStatus);
+  WebServer.on("/config", webConfig);
+  WebServer.onNotFound([]() {
+    WebServer.send(404, "text/plain", "Hier gibt es nichts zu sehen!");
+  });
+  WebServer.on("/", webDefaultHtml);
+  httpUpdater.setup(&WebServer);
+  WebServer.begin();
   DEBUG("Starte Webserver an Port " + String(WEBSERVER_PORT) + "...", "startWebServer()", _slInformational);
 }
 
@@ -50,7 +53,6 @@ void webDefaultHtml() {
 
   page += _table;
 
-
   page += FPSTR(HTTP_TABLE_END);
 
   for (int i = 0; i < GlobalConfig.NumLeds; i++) {
@@ -64,8 +66,8 @@ void webDefaultHtml() {
 
   page += F("</div></div></body></html>");
   page.replace("{v}", GlobalConfig.DeviceName);
-  webServer.sendHeader("Content-Length", String(page.length()));
-  webServer.send(200, "text/html\r\nRefresh:10", page);
+  WebServer.sendHeader("Content-Length", String(page.length()));
+  WebServer.send(200, "text/html\r\nRefresh:10", page);
 }
 
 void webSetLed() {
@@ -80,36 +82,36 @@ void webSetLed() {
 
   char hexArray[HEXARRAY_SIZE];
 
-  if (webServer.args() > 0) {
-    for (int i = 0; i < webServer.args(); i++) {
-      if (webServer.argName(i) == "led") {
-        led = webServer.arg(i).toInt();
+  if (WebServer.args() > 0) {
+    for (int i = 0; i < WebServer.args(); i++) {
+      if (WebServer.argName(i) == "led") {
+        led = WebServer.arg(i).toInt();
         led = led - 1;
       }
-      if (webServer.argName(i) == "blink") {
-        blink = webServer.arg(i).toInt();
+      if (WebServer.argName(i) == "blink") {
+        blink = WebServer.arg(i).toInt();
       }
-      if (webServer.argName(i) == "r")
-        r = webServer.arg("r").toInt();
-      if (webServer.argName(i) == "g")
-        g = webServer.arg("g").toInt();
-      if (webServer.argName(i) == "b")
-        b = webServer.arg("b").toInt();
-      if (webServer.argName(i) == "brightness") {
-        byte brightness = webServer.arg("brightness").toInt();
+      if (WebServer.argName(i) == "r")
+        r = WebServer.arg("r").toInt();
+      if (WebServer.argName(i) == "g")
+        g = WebServer.arg("g").toInt();
+      if (WebServer.argName(i) == "b")
+        b = WebServer.arg("b").toInt();
+      if (WebServer.argName(i) == "brightness") {
+        byte brightness = WebServer.arg("brightness").toInt();
         setLedBrightness(brightness);
         webSetLEDBrightness = true;
       }
-      if (webServer.argName(i) == "hex") {
-        String hexValue = webServer.arg("hex");
+      if (WebServer.argName(i) == "hex") {
+        String hexValue = WebServer.arg("hex");
         hexValue.replace("#", "");
         hexValue.toUpperCase();
         hexValue.toCharArray(hexArray, HEXARRAY_SIZE);
         hex = x2i(hexArray);
         useHex = true;
       }
-      if (webServer.argName(i) == "dim") {
-        int dimVal = webServer.arg(i).toInt();
+      if (WebServer.argName(i) == "dim") {
+        int dimVal = WebServer.arg(i).toInt();
         DEBUG("Got Dimmer for LED " + String(led) + " value = " + String(dimVal), "webSetLed()", _slInformational);
         blink = (dimVal >= GlobalConfig.DimBlink);
         hex = dim2val(dimVal);
@@ -123,21 +125,21 @@ void webSetLed() {
       setLed(led, hex);
       LEDConfig.Blink[led] = blink;
     }
-    webServer.send(200, "text/plain", "<state>ok</state>");
+    WebServer.send(200, "text/plain", "<state>ok</state>");
   }
 }
 
 void webSleep() {
   setLedMode(Sleep);
-  webServer.send(200, "text/plain", "<state>ok</state>");
+  WebServer.send(200, "text/plain", "<state>ok</state>");
 }
 
 void webWakeup() {
   int _DisplayTimeoutSeconds = 0;
-  if (webServer.args() > 0) {
-    for (int i = 0; i < webServer.args(); i++) {
-      if (webServer.argName(i) == "t") {
-        _DisplayTimeoutSeconds = webServer.arg(i).toInt();
+  if (WebServer.args() > 0) {
+    for (int i = 0; i < WebServer.args(); i++) {
+      if (WebServer.argName(i) == "t") {
+        _DisplayTimeoutSeconds = WebServer.arg(i).toInt();
         DEBUG("wake up for " + String(_DisplayTimeoutSeconds) + " seconds", "webWakeup()", _slInformational);
       }
     }
@@ -145,70 +147,45 @@ void webWakeup() {
 
   setLedMode(Wake, _DisplayTimeoutSeconds);
 
-  webServer.send(200, "text/plain", "<state>ok</state>");
+  WebServer.send(200, "text/plain", "<state>ok</state>");
 }
 
 void webWifiStatus() {
   IPAddress ip = WiFi.localIP();
-  webServer.send(200, "text/plain", "<state>connected</state><ssid>" + WiFi.SSID() + "</ssid><ip>" + String(ip) + "</ip><rssi>" + WiFi.RSSI() + "</rssi><mac>" + WiFi.macAddress() + "</mac>");
+  WebServer.send(200, "text/plain", "<state>connected</state><ssid>" + WiFi.SSID() + "</ssid><ip>" + String(ip) + "</ip><rssi>" + WiFi.RSSI() + "</rssi><mac>" + WiFi.macAddress() + "</mac>");
 }
 
 void webConfig() {
   bool sc = false;
 
-  if (webServer.args() > 0) {
-    for (int i = 0; i < webServer.args(); i++) {
-      DEBUG("Arg(" + String(i) + ") = " + webServer.argName(i) + " [" + webServer.arg(i) + "]", "webConfig()", _slInformational);
-      if (webServer.argName(i) == "ccuip")
-        strcpy(GlobalConfig.CcuIp, webServer.arg(i).c_str());
+  if (WebServer.args() > 0) {
+    for (int i = 0; i < WebServer.args(); i++) {
+      DEBUG("Arg(" + String(i) + ") = " + WebServer.argName(i) + " [" + WebServer.arg(i) + "]", "webConfig()", _slInformational);
+      if (WebServer.argName(i) == "ccuip")
+        strcpy(GlobalConfig.CcuIp, WebServer.arg(i).c_str());
 
-      if (webServer.argName(i) == "devicename")
-        strcpy(GlobalConfig.DeviceName, webServer.arg(i).c_str());
+      if (WebServer.argName(i) == "devicename")
+        strcpy(GlobalConfig.DeviceName, WebServer.arg(i).c_str());
 
-      if (webServer.argName(i) == "restorestate")
-        GlobalConfig.RestoreStateFromCCU = webServer.arg(i).toInt();
+      if (WebServer.argName(i) == "restorestate")
+        GlobalConfig.RestoreStateFromCCU = WebServer.arg(i).toInt();
 
-      if (webServer.argName(i) == "numleds")
-        GlobalConfig.NumLeds = webServer.arg(i).toInt();
+      if (WebServer.argName(i) == "numleds")
+        GlobalConfig.NumLeds = WebServer.arg(i).toInt();
 
-      if (webServer.argName(i) == "rgborder")
-        GlobalConfig.SelectedEOrder = webServer.arg(i).toInt();
+      if (WebServer.argName(i) == "rgborder")
+        GlobalConfig.SelectedEOrder = WebServer.arg(i).toInt();
 
-      if (webServer.argName(i) == "dimblink")
-        GlobalConfig.DimBlink = webServer.arg(i).toInt();
+      if (WebServer.argName(i) == "dimblink")
+        GlobalConfig.DimBlink = WebServer.arg(i).toInt();
 
-      if (webServer.argName(i) == "color1")
-        Dimmer2ColorDefinition[0] = webServer.arg(i);
+      for (int i = 0 ; i < 10; i++) {
+        if (WebServer.argName(i) == "color"+String(i+1))
+          Dimmer2ColorDefinition[i] = WebServer.arg(i);
+      }
 
-      if (webServer.argName(i) == "color2")
-        Dimmer2ColorDefinition[1] = webServer.arg(i);
-
-      if (webServer.argName(i) == "color3")
-        Dimmer2ColorDefinition[2]  = webServer.arg(i);
-
-      if (webServer.argName(i) == "color4")
-        Dimmer2ColorDefinition[3]  = webServer.arg(i);
-
-      if (webServer.argName(i) == "color5")
-        Dimmer2ColorDefinition[4]  = webServer.arg(i);
-
-      if (webServer.argName(i) == "color6")
-        Dimmer2ColorDefinition[5]  = webServer.arg(i);
-
-      if (webServer.argName(i) == "color7")
-        Dimmer2ColorDefinition[6]  = webServer.arg(i);
-
-      if (webServer.argName(i) == "color8")
-        Dimmer2ColorDefinition[7]  = webServer.arg(i);
-
-      if (webServer.argName(i) == "color9")
-        Dimmer2ColorDefinition[8]  = webServer.arg(i);
-
-      if (webServer.argName(i) == "color10")
-        Dimmer2ColorDefinition[9]  = webServer.arg(i);
-
-      if (webServer.argName(i) == "btnSave")
-        sc = (webServer.arg(i).toInt() == 1);
+      if (WebServer.argName(i) == "btnSave")
+        sc = (WebServer.arg(i).toInt() == 1);
     }
   }
 
@@ -250,6 +227,6 @@ void webConfig() {
   for (int i = 0; i < COLOR_COUNT; i++) {
     page.replace("{color" + String(i + 1) + "}", Dimmer2ColorDefinition[i]);
   }
-  webServer.send(200, "text/html", page);
+  WebServer.send(200, "text/html", page);
 }
 
