@@ -80,7 +80,6 @@ String Dimmer2ColorDefinition[COLOR_COUNT] {
   "00FF00", "F39C12", "FF0000", "FFFFFF", "0000FF", "00FF00", "F39C12", "FF0000", "FFFFFF", "0000FF"
 };
 
-
 enum DisplayStates {
   Sleep,
   Wake
@@ -116,7 +115,6 @@ bool ConfigKeyPress = false;
 bool ConfigKeyPressLONG = false;
 unsigned long ConfigKeyPressDownMillis = 0;
 unsigned long LastMillisConfigKeyPress = 0;
-bool ResistorConfigRunning = false;
 
 void setup() {
   pinMode(A0, INPUT);
@@ -220,13 +218,11 @@ void loop() {
     } else {
       if (ConfigKeyPress) {
         if ((millis() - ConfigKeyPressDownMillis) < KEYPRESSLONGMILLIS) {
-          if (!ResistorConfigRunning) {
-            int brightness = GlobalConfig.LedBrightness;
-            brightness = brightness + 25;
-            if (brightness > 255) brightness = 10;
-            DEBUG("ConfigKeyPress SHORT, setting brightness to " + String(brightness), "loop()", _slInformational);
-            setLedBrightness(brightness);
-          }
+          int brightness = GlobalConfig.LedBrightness;
+          brightness = brightness + 25;
+          if (brightness > 255) brightness = 10;
+          DEBUG("ConfigKeyPress SHORT, setting brightness to " + String(brightness), "loop()", _slInformational);
+          setLedBrightness(brightness);
           delay(10); //Entprellen
         }
       }

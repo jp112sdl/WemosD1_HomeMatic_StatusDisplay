@@ -107,12 +107,15 @@ bool saveSystemConfig() {
 
 void ResistorConfigKeys() {
   DEBUG("ResistorConfigStart...", "ResistorConfigKeys()", _slInformational);
-  ResistorConfigRunning = true;
-  WebServer.stop();
-  UDPClient.UDP.stop();
   setLedMode(Wake);
   byte currentKey = 0;
   bool _keypressed = false;
+
+  CRGB _ledsBackup[MAX_LEDS];
+  for (int i = 0; i < GlobalConfig.NumLeds; i++) {
+    _ledsBackup[i] = LEDConfig.leds[i];
+  }
+
   setLed(-1, CRGB::Black);
   setLed(0, CRGB::Red);
   FastLED.show();
@@ -140,9 +143,10 @@ void ResistorConfigKeys() {
   }
 
   saveSystemConfig();
-  setLed(-1, CRGB::Blue);
-  FastLED.show();
-  DEBUG("ResistorConfigStart... DONE! Restarting Wemos...", "ResistorConfigKeys()", _slInformational);
-  ESP.restart();
+  
+  for (int i = 0; i < GlobalConfig.NumLeds; i++) {
+    LEDConfig.leds[i] = _ledsBackup[i];
+  }
+  DEBUG("ResistorConfigStart... DONE!", "ResistorConfigKeys()", _slInformational);
 }
 
