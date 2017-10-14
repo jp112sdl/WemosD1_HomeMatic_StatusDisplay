@@ -11,15 +11,16 @@ void handlePIR() {
   if (PIRInterruptDetected) {
     switch (PIRInterruptDetected) {
       case 1:
-        DEBUG("PIR Interrupt HIGH detected!","handlePIR()",_slInformational);
+        DEBUG("PIR Interrupt HIGH detected!", "handlePIR()", _slInformational);
         setLedMode(Wake, 0);
         break;
       case 2:
-        DEBUG("PIR Interrupt LOW detected!","handlePIR()",_slInformational);
+        DEBUG("PIR Interrupt LOW detected!", "handlePIR()", _slInformational);
         setLedMode(Sleep);
         break;
     }
     PIRInterruptDetected = 0;
   }
 }
+
 

@@ -12,13 +12,17 @@
 #include "webConfigHTML.h"
 
 #define                       SERIALDEBUG
-#define                       WM_DEBUG_OUTPUT
-#define                       UDPDEBUG
+//#define                       WM_DEBUG_OUTPUT
+//#define                       UDPDEBUG
 
-#define CONFIG_PIN     D1
-#define PIR_PIN        D5
-#define WEBSERVER_PORT 80
-#define UDPPORT        6690
+#define CONFIG_PIN            D1
+#define PIR_PIN               D5
+#define WEBSERVER_PORT        80
+#define UDPPORT             6690
+#define HTTPGETTIMEOUT      2000 // 2 Sekunden Timeout für Anfragen an die CCU
+#define KEYPRESSLONGMILLIS  1500 // ms für langen Tastendruck
+#define KEYBOUNCEMILLIS      200 // ms Mindestzeit zwischen 2 Tastendrücken
+#define KEYTOLERANCE          7 // +/-Toleranz für 16er Widerstands-/Tastermatrix
 
 #ifdef UDPDEBUG
 const char * SYSLOGIP = "192.168.1.251";
@@ -45,6 +49,7 @@ struct led_t {
   CRGB ledsBackup[MAX_LEDS];
   int  Colors[MAX_LEDS];
   bool Blink[MAX_LEDS];
+  int  Keys[16] {1023, 1023, 1023, 1023, 1023, 1023, 1023, 1023, 1023, 1023, 1023, 1023, 1023, 1023, 1023, 1023};
 } LEDConfig;
 
 enum _EOrder {
@@ -80,7 +85,7 @@ enum DisplayStates {
   Wake
 };
 
-ESP8266WebServer webServer(WEBSERVER_PORT);
+ESP8266WebServer WebServer(WEBSERVER_PORT);
 ESP8266HTTPUpdateServer httpUpdater;
 
 //UDP
@@ -103,12 +108,16 @@ unsigned long LastDisplayTimeOutMillis = 0;
 unsigned long LastBlinkMillis = 0;
 bool OTAStart = false;
 bool DisplayState = Wake;
-bool brightnesskeylast = false;
 bool blinkState = false;
 bool UDPReady = false;
 volatile byte PIRInterruptDetected = 0;
+bool ConfigKeyPress = false;
+bool ConfigKeyPressLONG = false;
+unsigned long ConfigKeyPressDownMillis = 0;
+unsigned long LastMillisConfigKeyPress = 0;
 
 void setup() {
+  pinMode(A0, INPUT);
   pinMode(CONFIG_PIN, INPUT_PULLUP);
   pinMode(LED_BUILTIN, OUTPUT);
   initPIR();
@@ -161,11 +170,13 @@ void loop() {
   ArduinoOTA.handle();
 
   if (!OTAStart) {
-    webServer.handleClient();
+    WebServer.handleClient();
 
     handleUDP();
 
     handlePIR();
+
+    handleKEY();
 
     if (DisplayTimeoutSeconds > 0 && DisplayState == Wake && millis() - LastDisplayTimeOutMillis > DisplayTimeoutSeconds * 1000) {
       LastDisplayTimeOutMillis = millis();
@@ -188,18 +199,35 @@ void loop() {
       }
     }
 
-    if (digitalRead(CONFIG_PIN) == LOW ) {
-      if (!brightnesskeylast) {
-        brightnesskeylast = true;
-        int brightness = GlobalConfig.LedBrightness;
-        brightness = brightness + 25;
-        if (brightness > 255) brightness = 10;
-        setLedBrightness(brightness);
-        DEBUG("BRIGHTNESS_KEY pressed! Set brightness to " + String(brightness), "loop()", _slInformational);
-        delay(10); //Entprellen
+    //Tasterbedienung CONFIG_PIN
+    if (digitalRead(CONFIG_PIN) == LOW) {
+      if (!ConfigKeyPress) {
+        ConfigKeyPressDownMillis = millis();
+        if (millis() - LastMillisConfigKeyPress > KEYBOUNCEMILLIS) {
+          LastMillisConfigKeyPress = millis();
+          ConfigKeyPress = true;
+        }
+      }
+
+      if ((millis() - ConfigKeyPressDownMillis) > KEYPRESSLONGMILLIS && !ConfigKeyPressLONG) {
+        //PRESS_LONG
+        DEBUG("ConfigKeyPress LONG", "loop()", _slInformational);
+        ResistorConfigKeys();
+        ConfigKeyPressLONG = true;
       }
     } else {
-      brightnesskeylast = false;
+      if (ConfigKeyPress) {
+        if ((millis() - ConfigKeyPressDownMillis) < KEYPRESSLONGMILLIS) {
+          int brightness = GlobalConfig.LedBrightness;
+          brightness = brightness + 25;
+          if (brightness > 255) brightness = 10;
+          DEBUG("ConfigKeyPress SHORT, setting brightness to " + String(brightness), "loop()", _slInformational);
+          setLedBrightness(brightness);
+          delay(10); //Entprellen
+        }
+      }
+      ConfigKeyPress = false;
+      ConfigKeyPressLONG = false;
     }
     delay(10); //wg. UDP
   }

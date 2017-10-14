@@ -16,7 +16,7 @@ void getValuesFromCCU() {
         _DebugText += "dimVal = " + String(dimVal) + "; ";
         int color = dim2val(dimVal);
         int ledNum = i - 1;
-        LEDConfig.Blink[ledNum] =  (dimVal >= GlobalConfig.DimBlink);
+        LEDConfig.Blink[ledNum] = (dimVal >= GlobalConfig.DimBlink);
         setLed(ledNum, color);
       }
     }
@@ -30,7 +30,7 @@ String getStateCUxD(String id, String type) {
   if (id.indexOf(".null.") == -1) {
     if (WiFi.status() == WL_CONNECTED) {
       HTTPClient http;
-      http.setTimeout(2500);
+      http.setTimeout(HTTPGETTIMEOUT);
       id.replace(" ", "%20");
       String url = "http://" + String(GlobalConfig.CcuIp) + ":8181/cuxd.exe?ret=dom.GetObject(%22" + id + "%22)." + type + "()";
       // Serial.print("getStateFromCUxD url: " + url + " -> ");
@@ -47,7 +47,7 @@ String getStateCUxD(String id, String type) {
 
       payload = payload.substring(payload.indexOf("<ret>"));
       payload = payload.substring(5, payload.indexOf("</ret>"));
-      DEBUG("result: " + payload, "getStateCUxD()", _slInformational);
+      //DEBUG("result: " + payload, "getStateCUxD()", _slInformational);
 
       return payload;
     } else {
@@ -55,5 +55,41 @@ String getStateCUxD(String id, String type) {
         ESP.restart();
     }
   } else return "";
+}
+
+bool setStateCUxD(String id, String value) {
+  if (id.indexOf(".null.") == -1) {
+    if (WiFi.status() == WL_CONNECTED) {
+      HTTPClient http;
+      http.setTimeout(HTTPGETTIMEOUT);
+      id.replace(" ", "%20");
+      String url = "http://" + String(GlobalConfig.CcuIp) + ":8181/cuxd.exe?ret=dom.GetObject(%22" + id + "%22).State(" + value + ")";
+      DEBUG("setStateCUxD url: " + url, "setStateCUxD()", _slInformational);
+      http.begin(url);
+      int httpCode = http.GET();
+      String payload = "";
+
+      if (httpCode > 0) {
+        DEBUG("HTTP " + id + " success", "setStateCUxD()", _slInformational);
+        payload = http.getString();
+      }
+      if (httpCode != 200) {
+        DEBUG("HTTP " + id + " failed with HTTP Error Code " + String(httpCode), "setStateCUxD()", _slError);
+      }
+      http.end();
+
+      payload = payload.substring(payload.indexOf("<ret>"));
+      payload = payload.substring(5, payload.indexOf("</ret>"));
+
+
+      DEBUG("result: " + payload, "setStateCUxD()", (payload != "null") ? _slInformational : _slError);
+
+      return (payload != "null");
+
+    } else {
+      if (!doWifiConnect())
+        ESP.restart();
+    }
+  } else return true;
 }
 
