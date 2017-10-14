@@ -120,8 +120,8 @@ void ResistorConfigKeys() {
   setLed(0, CRGB::Red);
   FastLED.show();
   while (currentKey < 16) {
-    uint8_t aVal = analogRead(A0);
-    if (aVal > 5) {
+    int aVal = analogRead(A0);
+    if (aVal > 400) {
       if (!_keypressed) {
         _keypressed = true;
         int tmp = 0;

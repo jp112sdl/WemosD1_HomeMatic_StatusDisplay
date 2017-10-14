@@ -22,7 +22,7 @@
 #define HTTPGETTIMEOUT      2000 // 2 Sekunden Timeout für Anfragen an die CCU
 #define KEYPRESSLONGMILLIS  1500 // ms für langen Tastendruck
 #define KEYBOUNCEMILLIS      200 // ms Mindestzeit zwischen 2 Tastendrücken
-#define KEYTOLERANCE          10 // +/-Toleranz für 16er Widerstands-/Tastermatrix
+#define KEYTOLERANCE          7 // +/-Toleranz für 16er Widerstands-/Tastermatrix
 
 #ifdef UDPDEBUG
 const char * SYSLOGIP = "192.168.1.251";
