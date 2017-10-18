@@ -182,9 +182,11 @@ void webConfig() {
       if (WebServer.argName(i) == "dimblink")
         GlobalConfig.DimBlink = WebServer.arg(i).toInt();
 
-      for (int i = 0 ; i < 10; i++) {
-        if (WebServer.argName(i) == "color" + String(i + 1))
-          Dimmer2ColorDefinition[i] = WebServer.arg(i);
+      for (int j = 0; j < 10; j++) {
+        if (WebServer.argName(i) == "color" + String(j + 1)) {
+          Dimmer2ColorDefinition[j] = WebServer.arg(i);
+          DEBUG("DimmerColorDefinition for color" + String(j + 1) + " = " + WebServer.arg(i), "webConfig()", _slInformational);
+        }
       }
 
       if (WebServer.argName(i) == "btnSave")
