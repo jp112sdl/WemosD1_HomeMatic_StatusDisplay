@@ -170,6 +170,9 @@ void webConfig() {
       if (WebServer.argName(i) == "restorestate")
         GlobalConfig.RestoreStateFromCCU = WebServer.arg(i).toInt();
 
+      if (WebServer.argName(i) == "pirtoccu")
+        GlobalConfig.PIRtoCCU = WebServer.arg(i).toInt();
+
       if (WebServer.argName(i) == "numleds")
         GlobalConfig.NumLeds = WebServer.arg(i).toInt();
 
@@ -180,7 +183,7 @@ void webConfig() {
         GlobalConfig.DimBlink = WebServer.arg(i).toInt();
 
       for (int i = 0 ; i < 10; i++) {
-        if (WebServer.argName(i) == "color"+String(i+1))
+        if (WebServer.argName(i) == "color" + String(i + 1))
           Dimmer2ColorDefinition[i] = WebServer.arg(i);
       }
 
@@ -210,6 +213,7 @@ void webConfig() {
 
   page.replace("{ccuip}", GlobalConfig.CcuIp);
   page.replace("{ckrestore}", GlobalConfig.RestoreStateFromCCU ? "checked" : "");
+  page.replace("{ckpirtoccu}", GlobalConfig.PIRtoCCU ? "checked" : "");
   page.replace("{numleds}", String(GlobalConfig.NumLeds));
   page.replace("{dimblink}", String(GlobalConfig.DimBlink));
   page.replace("{v}", GlobalConfig.DeviceName);
