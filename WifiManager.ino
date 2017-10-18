@@ -43,6 +43,11 @@ bool doWifiConnect() {
     if (GlobalConfig.RestoreStateFromCCU) chrRestoreOldState =  "1" ;
     WiFiManagerParameter custom_cbrestorestate("restorestate", "Boot: Lade Werte von CCU", chrRestoreOldState, 8, INPUT_CHECKBOX);
 
+    char*chrPIRtoCCU = "0";
+    if (GlobalConfig.PIRtoCCU) chrPIRtoCCU =  "1" ;
+    WiFiManagerParameter custom_cbpirtoccu("pirtoccu", "BWM an CCU senden", chrPIRtoCCU, 8, INPUT_CHECKBOX);
+
+
     WiFiManagerParameter custom_text_led("<div>LED Konfiguration:</div>");
     WiFiManagerParameter custom_numleds("numleds", "Anzahl LEDs", String(GlobalConfig.NumLeds).c_str(), VARIABLE_SIZE, INPUT_TEXT, "required pattern='[0-9]{1,2}'");
 
@@ -83,11 +88,12 @@ bool doWifiConnect() {
     wifiManager.addParameter(&custom_text_led);
     wifiManager.addParameter(&custom_numleds);
     wifiManager.addParameter(&custom_rgborder);
-    
+
     wifiManager.addParameter(&custom_text_hm);
     wifiManager.addParameter(&custom_ccuip);
     wifiManager.addParameter(&custom_devicename);
     wifiManager.addParameter(&custom_cbrestorestate);
+    wifiManager.addParameter(&custom_cbpirtoccu);
 
     wifiManager.addParameter(&custom_text_dimmerconfig);
     wifiManager.addParameter(&custom_color1);
@@ -144,6 +150,7 @@ bool doWifiConnect() {
       GlobalConfig.NumLeds = atoi(custom_numleds.getValue());
       GlobalConfig.SelectedEOrder = atoi(custom_rgborder.getValue());
       GlobalConfig.RestoreStateFromCCU = (atoi(custom_cbrestorestate.getValue()) == 1);
+      GlobalConfig.PIRtoCCU = (atoi(custom_cbpirtoccu.getValue()) == 1);
 
       Dimmer2ColorDefinition[0] = String(custom_color1.getValue());
       Dimmer2ColorDefinition[1] = String(custom_color2.getValue());

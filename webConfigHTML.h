@@ -6,7 +6,8 @@ const char HTTP_CONF[] PROGMEM = R"=====(
 <div>HomeMatic Konfiguration:</div>
 <div id='div_ccu'><input type='text' id='ccuip' name='ccuip' length=1 placeholder='IP der CCU2' value='{ccuip}' pattern='((^|\.)((25[0-5])|(2[0-4]\d)|(1\d\d)|([1-9]?\d))){4}$'></div>
 <div id='div_devicename'><input type='text' id='devicename' name='devicename' length=1 placeholder='Ger&auml;tename' value='{v}' pattern='\w{1,}'></div>
-<div id='div_restorestate'><label for='restorestate'>Boot: Lade Werte von CCU</label><span class='ckb'><input id='restorestate' type='checkbox' name='restorestate' {ckrestore} value=1></span></div>
+<div id='div_restorestate'><label for='restorestate'>Boot: Lade Werte von CCU&nbsp;&nbsp;&nbsp;</label><span class='ckb'><input id='restorestate' type='checkbox' name='restorestate' {ckrestore} value=1></span></div>
+<div id='div_pirtoccu'><label for='pirtoccu'>BWM an CCU senden&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label><span class='ckb'><input id='pirtoccu' type='checkbox' name='pirtoccu' {ckpirtoccu} value=1></span></div>
 <div>Dimmer-Konfiguration:</div>
 <div id='div_color1'><input type='input' id='color1' name='color1' length=1 placeholder='Farbe f&uuml;r Dimmer 10..19%' value='{color1}' onchange='setColor()' > <input type='color' id='cp_color1' name='cp_color1' onchange='setCPColor()'></div>
 <div id='div_color2'><input type='input' id='color2' name='color2' length=1 placeholder='Farbe f&uuml;r Dimmer 20..29%' value='{color2}' onchange='setColor()' > <input type='color' id='cp_color2' name='cp_color2' onchange='setCPColor()'></div>
