@@ -19,6 +19,12 @@ void handlePIR() {
         setLedMode(Sleep);
         break;
     }
+
+    if (GlobalConfig.PIRtoCCU && PIRInterruptDetected > 0) {
+      String val = (PIRInterruptDetected == 1) ? "true" : "false";
+      setStateCUxD(String(GlobalConfig.DeviceName) + "BWM", val);
+    }
+
     PIRInterruptDetected = 0;
   }
 }

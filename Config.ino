@@ -27,6 +27,7 @@ bool loadSystemConfig() {
           json["ledkeys"].asArray().copyTo(LEDConfig.Keys);
 
           GlobalConfig.RestoreStateFromCCU = json["restorestate"];
+          GlobalConfig.PIRtoCCU = json["pirtoccu"];
 
           for (int i = 0; i < COLOR_COUNT; i++) {
             String colorStr = (json["color" + String(i)]).as<String>();
@@ -75,6 +76,7 @@ bool saveSystemConfig() {
   json["eorder"] = GlobalConfig.SelectedEOrder;
   json["brightness"] = GlobalConfig.LedBrightness;
   json["restorestate"] = GlobalConfig.RestoreStateFromCCU;
+  json["pirtoccu"] = GlobalConfig.PIRtoCCU;
   json["dimBlink"] = GlobalConfig.DimBlink;
 
   JsonArray& ledkeys = jsonBuffer.createArray();

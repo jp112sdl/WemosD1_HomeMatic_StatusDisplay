@@ -70,6 +70,7 @@ struct globalconfig_t {
   char CcuIp[IP_SIZE];
   char DeviceName[VARIABLE_SIZE];
   bool RestoreStateFromCCU = false;
+  bool PIRtoCCU = false;
   byte DimBlink = 11;
 } GlobalConfig;
 
