@@ -16,3 +16,4 @@ Die Helligkeit der LEDs lässt sich mit einem Taster in 25 Stufen einstellen.
 
 
 Die komplette Nachbauanleitung findet ihr im [Wiki](https://github.com/jp112sdl/WemosD1_HomeMatic_StatusDisplay/wiki)
+
