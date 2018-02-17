@@ -33,7 +33,7 @@ String getStateCUxD(String id, String type) {
       http.setTimeout(HTTPGETTIMEOUT);
       id.replace(" ", "%20");
       String url = "http://" + String(GlobalConfig.CcuIp) + ":8181/cuxd.exe?ret=dom.GetObject(%22" + id + "%22)." + type + "()";
-      // Serial.print("getStateFromCUxD url: " + url + " -> ");
+      DEBUG("getStateFromCUxD url: " + url + " -> ", "getStateCUxD()", _slInformational);
       http.begin(url);
       int httpCode = http.GET();
       String payload = "error";
@@ -47,7 +47,7 @@ String getStateCUxD(String id, String type) {
 
       payload = payload.substring(payload.indexOf("<ret>"));
       payload = payload.substring(5, payload.indexOf("</ret>"));
-      //DEBUG("result: " + payload, "getStateCUxD()", _slInformational);
+      DEBUG("result: " + payload, "getStateCUxD()", _slInformational);
 
       return payload;
     } else {

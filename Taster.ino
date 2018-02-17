@@ -3,6 +3,7 @@ unsigned long KeyPressDownMillis = 0;
 unsigned long LastMillisKeyPress = 0;
 bool KeyPress = false;
 byte KeyDetected = 0;
+byte LastKeyDetected = 0;
 bool PRESS_LONGsent = false;
 String KeyChannelName = "";
 
@@ -30,16 +31,17 @@ void handleKEY() {
         DEBUG("KEY Number " + String(KeyDetected) + " detected", "handleKEY()", _slInformational);
         LastMillisKeyPress = millis();
         KeyPress = true;
+        LastKeyDetected = KeyDetected;
       }
     }
 
     if ((millis() - KeyPressDownMillis) > KEYPRESSLONGMILLIS && !PRESS_LONGsent) {
       //PRESS_LONG
       DEBUG("PRESS_LONG", "handleKEY()", _slInformational);
-      KeyChannelName =  getStateCUxD(String(GlobalConfig.DeviceName) + "Taster:" + String(KeyDetected), "Address");
+      KeyChannelName =  getStateCUxD(String(GlobalConfig.DeviceName) + "Taster", "Address");
       DEBUG("KeyChannelName = " + KeyChannelName, "handleKEY()", _slInformational);
-      if (KeyChannelName != "") {
-        setStateCUxD("CUxD." + KeyChannelName + ".PRESS_LONG", "true");
+      if (KeyChannelName != "" && KeyChannelName != "null") {
+        setStateCUxD("CUxD." + KeyChannelName + ":" + String(LastKeyDetected) + ".PRESS_LONG", "true");
       } else {
         DEBUG("CUxD Tasterkanal nicht gefunden!", "handleKEY()", _slError);
       }
@@ -51,10 +53,10 @@ void handleKEY() {
       if ((millis() - KeyPressDownMillis) < KEYPRESSLONGMILLIS) {
         //PRESS_SHORT
         DEBUG("PRESS_SHORT", "handleKEY()", _slInformational);
-        KeyChannelName =  getStateCUxD(String(GlobalConfig.DeviceName) + "Taster:" + String(KeyDetected), "Address");
+        KeyChannelName =  getStateCUxD(String(GlobalConfig.DeviceName) + "Taster", "Address");
         DEBUG("KeyChannelName = " + KeyChannelName, "handleKEY()", _slInformational);
-        if (KeyChannelName != "") {
-          setStateCUxD("CUxD." + KeyChannelName + ".PRESS_SHORT", "true");
+        if (KeyChannelName != "" && KeyChannelName != "null") {
+          setStateCUxD("CUxD." + KeyChannelName + ":" + String(LastKeyDetected) + ".PRESS_SHORT", "true");
         } else {
           DEBUG("CUxD Tasterkanal nicht gefunden!", "handleKEY()", _slError);
         }
