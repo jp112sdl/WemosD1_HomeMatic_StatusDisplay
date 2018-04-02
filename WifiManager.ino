@@ -13,6 +13,7 @@ bool doWifiConnect() {
     WiFi.disconnect();
     WiFi.mode(WIFI_STA);
     WiFi.hostname(GlobalConfig.DeviceName);
+    WiFi.setSleepMode(WIFI_NONE_SLEEP);
     WiFi.begin(_ssid.c_str(), _psk.c_str());
     int waitCounter = 0;
     if (String(ip) != "0.0.0.0")
@@ -27,6 +28,7 @@ bool doWifiConnect() {
       delay(500);
     }
     DEBUG("Wifi Connected", "doWifiConnect()", _slInformational);
+    WiFiConnected = true;
     return true;
   } else {
     WiFiManager wifiManager;

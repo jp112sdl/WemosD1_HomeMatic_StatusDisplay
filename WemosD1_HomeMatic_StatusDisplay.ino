@@ -103,6 +103,7 @@ char ip[IP_SIZE]             = "0.0.0.0";
 char netmask[IP_SIZE]        = "0.0.0.0";
 char gw[IP_SIZE]             = "0.0.0.0";
 boolean startWifiManager    = false;
+bool WiFiConnected = false;
 
 int DisplayTimeoutSeconds = 0;
 unsigned long LastDisplayTimeOutMillis = 0;
@@ -116,6 +117,7 @@ bool ConfigKeyPress = false;
 bool ConfigKeyPressLONG = false;
 unsigned long ConfigKeyPressDownMillis = 0;
 unsigned long LastMillisConfigKeyPress = 0;
+unsigned long LastWiFiReconnectMillis = 0;
 
 void setup() {
   pinMode(A0, INPUT);
@@ -167,6 +169,23 @@ void loop() {
     LastDisplayTimeOutMillis = millis();
   if (LastBlinkMillis > millis())
     LastBlinkMillis = millis();
+  if (LastWiFiReconnectMillis > millis())
+    LastWiFiReconnectMillis = millis();
+
+  //Reconnect WiFi wenn nicht verbunden (alle 30 Sekunden)
+  if (WiFi.status() != WL_CONNECTED) {
+    WiFiConnected = false;
+    if (millis() - LastWiFiReconnectMillis > 30000) {
+      LastWiFiReconnectMillis = millis();
+      DEBUG("WiFi Connection lost! Reconnecting...");
+      WiFi.reconnect();
+    }
+  } else {
+    if (!WiFiConnected) {
+      DEBUG("WiFi reconnected!");
+      WiFiConnected = true;
+    }
+  }
 
   ArduinoOTA.handle();
 
